@@ -1,12 +1,14 @@
 import React from 'react';
+import MainPage from '../MainPage';
 
 class Dashboard extends React.Component {
 
 	render() {
 
 		return (
-			<div>
-				Dashboard
+			<div className="main_body">
+				<h2 className="ta-center">EoD</h2>
+				<MainPage />
 			</div>
 		);
 	}
