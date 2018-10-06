@@ -5,11 +5,12 @@ import GlobalReducer from '../reducers/GlobalReducer';
 
 import BaseActionsClass from './BaseActionsClass';
 import FormActions from './FormActions';
+import ContractAction from './ContractAction';
 
 import history from '../history'
 
 import { MAIN_FORM } from '../constants/FormConstants';
-import { MAIN_PATH } from '../constants/GlobalConstants';
+import { START_PATH } from '../constants/GlobalConstants';
 
 class AuthActionsClass extends BaseActionsClass {
 
@@ -27,7 +28,8 @@ class AuthActionsClass extends BaseActionsClass {
 	 */
 	login() {
 		return async (dispatch, getState) => {
-            const privateKey = getState().form.getIn([MAIN_FORM, 'privateKey']);
+			// const privateKey = getState().form.getIn([MAIN_FORM, 'privateKey']);
+			const privateKey ='5K5Xo4pKP8Wn5tivpJxEqVvD57XRokxkfHDercEkve7Am2QUKdo';
             
 			try {
 				const publicKey = PrivateKey.fromWif(privateKey).toPublicKey().toString();
@@ -40,19 +42,18 @@ class AuthActionsClass extends BaseActionsClass {
 
 				userId = userId.toJS()[0];
 				const user = await dispatch(EchoJSActions.fetch(userId));
-
+				
 				dispatch(GlobalReducer.actions.setValue({ fields: ['user'], value: user }));
 				dispatch(GlobalReducer.actions.setValue({ fields: ['privateKey'], value: privateKey }));
 				dispatch(GlobalReducer.actions.setValue({ fields: ['publicKey'], value: publicKey }));
-
-				history.push(MAIN_PATH);
+				await dispatch(ContractAction.get_map())
+				history.push(START_PATH);
 			} catch (e) {
+				console.log(e)
 				dispatch(FormActions.setFormValue(MAIN_FORM, ['error'], 'wrong key or login error' ));
 			}
 		};
     }
-    
-    
 
 }
 
