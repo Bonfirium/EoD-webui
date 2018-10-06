@@ -6,8 +6,8 @@ import GameComponent from './components/game';
 export default async () => {
 // noinspection JSValidateTypes
 	/** @type {PIXI.Application} */
-	const pixiWidth = 960;
-	const pixiHeight = 512;
+	const pixiWidth = 992;
+	const pixiHeight = 544;
 	const app = new PIXI.Application(pixiWidth, pixiHeight);
 	app.renderer.backgroundColor = 0x484848;
 	const gameContainer = document.getElementById('game-container');
