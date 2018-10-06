@@ -7,7 +7,7 @@ const DEFAULT_FIELDS = Map({
 	privateKey: null,
 	publicKey: null,
 	user: '',
-	node_address: ''
+	node_address: '',
 });
 
 export default createModule({

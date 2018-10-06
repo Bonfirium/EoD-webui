@@ -1,3 +1,4 @@
+/* eslint-disable no-undef */
 import { EchoJSActions } from 'echojs-redux';
 
 import GlobalReducer from '../reducers/GlobalReducer';
@@ -34,7 +35,7 @@ class GlobalActionsClass extends BaseActionsClass {
 			try {
 				await dispatch(EchoJSActions.connect(__NODE_ADDRESS_EXTRA__));
 			} catch (e) {
-				console.log('coud not connected')
+				console.log('could not connected');
 				// push error to view
 			}
 		};
