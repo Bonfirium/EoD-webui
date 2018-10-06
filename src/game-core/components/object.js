@@ -3,14 +3,15 @@ import BaseComponent from './_base';
 
 export default class ObjectComponent extends BaseComponent {
 
-	constructor(texture, { x, y, width, height, display = true }) {
+	constructor(texture, { x, y, width, height, visible = true }) {
 		super();
 		this._sprite = new PIXI.Sprite(texture);
 		this._sprite.height = height;
 		this._sprite.width = width;
+		this._sprite.visible = visible;
 		if (x !== undefined) this._sprite.x = x;
 		if (y !== undefined) this._sprite.y = y;
-		if (display) this.container.addChild(this._sprite);
+		this.container.addChild(this._sprite);
 	}
 
 }
