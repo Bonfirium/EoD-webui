@@ -1,5 +1,4 @@
 import * as PIXI from 'pixi.js';
-import BaseLoader from './_base';
 import chest from '../../assets/images/game/chest_128.png';
 import door from '../../assets/images/game/door_38.png';
 import doorInverted from '../../assets/images/game/door_38_R.png';
@@ -24,17 +23,20 @@ import background from '../../assets/images/game/back_2000.png';
  */
 export let Images = {};
 
-export default class ImagesLoader {
-
-	constructor() {
+export default function loadImages() {
+	return new Promise((resolve) => {
 		const loader = new PIXI.loaders.Loader();
-		Object.keys({
+		const imagesToLoad = {
 			chest, door, doorInverted,
 			hero1, hero2, hero3, hero4,
 			monster1, monster2, monster3, monster4,
 			portal, room, background,
-		}).forEach((name) => { loader.add(name, imagesToLoad[name]); });
-		loader.load((_, resources) => { Images = resources; });
-	}
+		};
+		Object.keys(imagesToLoad).forEach((name) => { loader.add(name, imagesToLoad[name]); });
+		loader.load((_, resources) => {
+			Images = resources;
+			resolve();
+		});
+	});
 
 }
