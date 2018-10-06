@@ -1,6 +1,5 @@
-import constants from '../helpers/constants';
 import { D12_X, D12_Y } from '../../../gen_test_data';
-import { roomg_gen } from './rooms.generator';
+import { MAP_VALUES } from '../constants/logic.constants';
 
 const _getNeighbors = (map, x, y) => {
 	const roomDoors = [];
@@ -17,7 +16,7 @@ const _getNeighbors = (map, x, y) => {
 
 		const potentialNeighbor = map[newX][newY];
 
-		if (potentialNeighbor === constants.MAP_VALUES.ROOM || potentialNeighbor === 4 || potentialNeighbor === 5) {
+		if (potentialNeighbor === MAP_VALUES.ROOM || potentialNeighbor === MAP_VALUES.PORTAL || potentialNeighbor === MAP_VALUES.TREASURE) {
 			roomDoors.push({
 				x: (x + newX) / 2,
 				y: (y + newY) / 2,
@@ -28,18 +27,16 @@ const _getNeighbors = (map, x, y) => {
 	return roomDoors;
 };
 
+
 export default (map) => {
 
 	let coordinatesArray = [];
-	const { ROOM } = constants;
-	const halfWidth = ROOM.WIDHT / 2;
-	const halfHeight = ROOM.HEIGHT / 2;
 
 	for (let x = 0; x < 30; x++) {
 		for (let y = 0; y < 16; y++) {
 
 			const fl = map[x][y];
-			if (fl === constants.MAP_VALUES.ROOM || fl === 4 || fl === 5) {
+			if (fl === MAP_VALUES.ROOM || fl === 4 || fl === 5) {
 
 				const neighbors = _getNeighbors(map, x, y);
 
