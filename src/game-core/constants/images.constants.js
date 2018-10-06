@@ -12,3 +12,9 @@ export const MOVEABLE = {
 	HEIGHT: 48,
 	ANCHOR: 0.5,
 };
+
+export const DOOR = {
+	WIDTH: 16,
+	HEIGHT: 16,
+	ANCHOR: 0.5,
+};
