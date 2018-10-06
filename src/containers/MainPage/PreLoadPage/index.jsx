@@ -5,11 +5,13 @@ import connect from 'react-redux/es/connect/connect';
 import TextInput from '../../../components/Forms/TextInput';
 import FormActions from '../../../actions/FormActions';
 import { MAIN_FORM } from '../../../constants/FormConstants';
+import initPixi from '../../../game-core/app';
 
 class PreLoadPage extends Component {
 
 	componentDidMount() {
 		this.props.clearForm();
+		initPixi();
 	}
 
 	render() {
@@ -26,6 +28,7 @@ class PreLoadPage extends Component {
 				<div className="button-wrapper ta-center">
 					<Button className="button-wrapper submit-button" onClick={(e) => this.props.onClick(e)} secondary type="button" content="Submit" />
 				</div>
+
 			</div>
 		);
 	}

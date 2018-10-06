@@ -14,7 +14,7 @@ import Org_4 from '../../assets/images/game/ogr_04_true.png';
 import Org_5 from '../../assets/images/game/ogr_05_true.png';
 import Portal from '../../assets/images/game/portal_true_90.png';
 import Room from '../../assets/images/game/room_128.png';
-
+import Background from '../../assets/images/game/back_2000.png';
 
 /**
  *  ## USAGE
@@ -33,7 +33,7 @@ export default class ImagesLoader extends BaseLoader {
 			Chest, Door, DoorR,
 			Hero_1, Hero_2, Hero_3, Hero_4,
 			Org_1, Org_2, Org_3, Org_4, Org_5,
-			Portal, Room,
+			Portal, Room, Background
 		];
 		this.imagesToLoad.forEach((image) => {
 			// resource id is a same as path to this image

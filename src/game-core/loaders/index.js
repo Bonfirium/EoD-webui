@@ -1,4 +1,5 @@
 import ImagesLoader from './images';
+import * as PIXI from 'pixi.js';
 
 const loadersConstructors = [
 	ImagesLoader,
