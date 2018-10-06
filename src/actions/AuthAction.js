@@ -6,7 +6,7 @@ import GlobalReducer from '../reducers/GlobalReducer';
 import BaseActionsClass from './BaseActionsClass';
 import FormActions from './FormActions';
 
-import history from '../history'
+import history from '../history';
 
 import { MAIN_FORM } from '../constants/FormConstants';
 import { MAIN_PATH } from '../constants/GlobalConstants';
@@ -27,19 +27,19 @@ class AuthActionsClass extends BaseActionsClass {
 	 */
 	login() {
 		return async (dispatch, getState) => {
-            const privateKey = getState().form.getIn([MAIN_FORM, 'privateKey']);
-            
+			const privateKey = getState().form.getIn([MAIN_FORM, 'privateKey']);
+
 			try {
 				const publicKey = PrivateKey.fromWif(privateKey).toPublicKey().toString();
-				let userId = await ChainStore.FetchChain('getAccountRefsOfKey', publicKey);
+				const userId = await ChainStore.FetchChain('getAccountRefsOfKey', publicKey);
 				if (!userId || !userId.toJS || !userId.toJS()[0]) {
-					console.log('user nnot found')
-					dispatch(FormActions.setFormValue(MAIN_FORM, ['error'], 'User not found' ));
+					console.log('user not found');
+					dispatch(FormActions.setFormValue(MAIN_FORM, ['error'], 'User not found'));
 					return;
 				}
 
-				userId = userId.toJS()[0];
-				const user = await dispatch(EchoJSActions.fetch(userId));
+				const id = userId.toJS()[0];
+				const user = await dispatch(EchoJSActions.fetch(id));
 
 				dispatch(GlobalReducer.actions.setValue({ fields: ['user'], value: user }));
 				dispatch(GlobalReducer.actions.setValue({ fields: ['privateKey'], value: privateKey }));
@@ -47,12 +47,11 @@ class AuthActionsClass extends BaseActionsClass {
 
 				history.push(MAIN_PATH);
 			} catch (e) {
-				dispatch(FormActions.setFormValue(MAIN_FORM, ['error'], 'wrong key or login error' ));
+				dispatch(FormActions.setFormValue(MAIN_FORM, ['error'], 'wrong key or login error'));
 			}
 		};
-    }
-    
-    
+	}
+
 
 }
 

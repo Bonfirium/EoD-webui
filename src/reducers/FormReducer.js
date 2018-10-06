@@ -24,7 +24,6 @@ export default createModule({
 
 		setFormValue: {
 			reducer: (state, { payload }) => {
-				console.log(...payload.field)
 				state = state.setIn([payload.form, ...payload.field], payload.value);
 
 				return state;

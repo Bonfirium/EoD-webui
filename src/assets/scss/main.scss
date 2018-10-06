@@ -68,6 +68,31 @@ body {
   width: 100%;
 }
 
+.header-wrap {
+  width: 30%;
+  &.ui.menu {
+    .item {
+      color: #bfbfbf;
+      justify-content: center;
+      background-color: #383C38;
+      width: 50%;
+      padding: 0 1.14285714em;
+      .active {
+        font-weight: 600;
+      }
+    }
+  }
+}
+
+
+.header-center-wrap {
+  color: #000;
+  align-items: center;
+  justify-content: center;
+    margin: auto;
+  padding-bottom: 100px;
+}
+
 .tr_label{
   width: 150px;
 }
