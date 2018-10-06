@@ -1,7 +1,6 @@
-import BaseComponent from './_base';
-import RoomImage from '../../assets/images/game/room_128.png';
-import { Images } from '../loaders/images';
 import * as PIXI from 'pixi.js';
+import BaseComponent from './_base';
+import { Images } from '../loaders/images';
 import constants from '../helpers/constants';
 
 export default class Room extends BaseComponent {
@@ -13,8 +12,8 @@ export default class Room extends BaseComponent {
 	 */
 	constructor(x, y) {
 		super();
-
-		this._sprite = new PIXI.Sprite(Images[RoomImage]);
+		console.log('room', Images.room)
+		this._sprite = new PIXI.Sprite(Images.room);
 		this._sprite.height = constants.ROOM.WIDHT;
 		this._sprite.width = constants.ROOM.HEIGHT;
 

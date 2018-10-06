@@ -15,13 +15,23 @@ import room from '../../assets/images/game/room_128.png';
 import background from '../../assets/images/game/back_2000.png';
 
 /**
- *  ## USAGE
- * `import Images from './loaders/image';`
- * `import SomeImage from './assets/images/someImage.png';`
- * `new Sprite(Images[SomeImage]);`
- * @type {Object.<String, PIXI.Texture>}
+ * @typedef {Object} Images
+ * @property {PIXI.Texture} chest
+ * @property {PIXI.Texture} door
+ * @property {PIXI.Texture} doorInverted
+ * @property {PIXI.Texture} hero1
+ * @property {PIXI.Texture} hero2
+ * @property {PIXI.Texture} hero3
+ * @property {PIXI.Texture} hero4
+ * @property {PIXI.Texture} monster1
+ * @property {PIXI.Texture} monster2
+ * @property {PIXI.Texture} monster3
+ * @property {PIXI.Texture} monster4
+ * @property {PIXI.Texture} portal
+ * @property {PIXI.Texture} room
+ * @property {PIXI.Texture} background
  */
-export let Images = {};
+export const Images = {};
 
 export default function loadImages() {
 	return new Promise((resolve) => {
@@ -34,7 +44,7 @@ export default function loadImages() {
 		};
 		Object.keys(imagesToLoad).forEach((name) => { loader.add(name, imagesToLoad[name]); });
 		loader.load((_, resources) => {
-			Images = resources;
+			Object.keys(resources).forEach((name) => { Images[name] = resources[name].texture });
 			resolve();
 		});
 	});
