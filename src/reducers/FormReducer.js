@@ -9,6 +9,7 @@ const DEFAULT_FIELDS = Map({});
 
 const DEFAULT_FORM_FIELDS = {
 	[MAIN_FORM]: Map({
+		error: '',
 		privateKey: '',
 	}),
 };
@@ -23,6 +24,7 @@ export default createModule({
 
 		setFormValue: {
 			reducer: (state, { payload }) => {
+				console.log(...payload.field)
 				state = state.setIn([payload.form, ...payload.field], payload.value);
 
 				return state;

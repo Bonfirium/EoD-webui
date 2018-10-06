@@ -19,6 +19,7 @@ class FormActionsClass extends BaseActionsClass {
 	 */
 	setFormValue(form, field, value) {
 		return (dispatch) => {
+			console.log(form)
 			dispatch(this.reducer.actions.setFormValue({ form, field, value }));
 		};
 	}
