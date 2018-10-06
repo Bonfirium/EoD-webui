@@ -7,12 +7,11 @@ export default class Room extends BaseComponent {
 
 	/**
 	 *
-	 * @param width
-	 * @param height
+	 * @param x
+	 * @param y
 	 */
 	constructor(x, y) {
 		super();
-		console.log('room', Images.room)
 		this._sprite = new PIXI.Sprite(Images.room);
 		this._sprite.height = constants.ROOM.WIDHT;
 		this._sprite.width = constants.ROOM.HEIGHT;

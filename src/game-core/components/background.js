@@ -1,13 +1,12 @@
-import BaseComponent from './_base';
-import BackgroundImage from '../../assets/images/game/back_2000.png';
-import { Images } from '../loaders/images';
 import * as PIXI from 'pixi.js';
+import BaseComponent from './_base';
+import { Images } from '../loaders/images';
 
 export default class Background extends BaseComponent {
 
 	constructor() {
 		super();
-		const back = new PIXI.Sprite(Images[BackgroundImage]);
+		const back = new PIXI.Sprite(Images.background);
 		this.container.addChild(back);
 	}
 
