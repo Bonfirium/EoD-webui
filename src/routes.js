@@ -5,7 +5,7 @@ import App from './containers/App';
 import Dashboard from './containers/Dashboard';
 import StartPage from './containers/StartPage';
 
-import { MAIN_PATH, START_PATH } from './constants/GlobalConstants'
+import { MAIN_PATH, START_PATH } from './constants/GlobalConstants';
 
 export default class Routes extends React.Component {
 
