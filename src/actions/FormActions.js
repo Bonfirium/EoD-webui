@@ -10,13 +10,6 @@ class FormActionsClass extends BaseActionsClass {
 		super(FormReducer);
 	}
 
-
-	setValue(form, field, value) {
-		return (dispatch) => {
-			dispatch(this.reducer.actions.set({ form, field, value }));
-		};
-	}
-
 	/**
 	 * Set value by field for object {value, error}
 	 * @param form

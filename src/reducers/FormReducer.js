@@ -5,10 +5,7 @@ import _ from 'lodash';
 import { MAIN_FORM } from '../constants/FormConstants';
 import TransformModules from '../utils/TransformModules';
 
-const DEFAULT_FIELDS = Map({
-	error: null,
-	loading: false,
-});
+const DEFAULT_FIELDS = Map({});
 
 const DEFAULT_FORM_FIELDS = {
 	[MAIN_FORM]: Map({
@@ -27,23 +24,6 @@ export default createModule({
 		setFormValue: {
 			reducer: (state, { payload }) => {
 				state = state.setIn([payload.form, ...payload.field], payload.value);
-
-				return state;
-			},
-		},
-
-		setFormError: {
-			reducer: (state, { payload }) => {
-				if (payload.field === 'error') {
-					state = state.setIn([payload.form, payload.field], payload.value);
-				} else {
-					const field = state.getIn([payload.form, payload.field]);
-
-					state = state.setIn([payload.form, payload.field], Object.assign({}, field, {
-						value: field.value,
-						error: payload.value,
-					}));
-				}
 
 				return state;
 			},
