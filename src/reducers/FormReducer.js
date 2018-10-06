@@ -2,7 +2,7 @@ import { createModule } from 'redux-modules';
 import { Map } from 'immutable';
 import _ from 'lodash';
 
-import { FORM_LOGIN } from '../constants/FormConstants';
+import { MAIN_FORM } from '../constants/FormConstants';
 import TransformModules from '../utils/TransformModules';
 
 const DEFAULT_FIELDS = Map({
@@ -11,53 +11,22 @@ const DEFAULT_FIELDS = Map({
 });
 
 const DEFAULT_FORM_FIELDS = {
-	[FORM_LOGIN]: Map({
-		login: {
-			value: '',
-			error: null,
-		},
-		password: {
-			value: '',
-			error: null,
-		},
+	[MAIN_FORM]: Map({
+		privateKey: '',
 	}),
 };
 
 export default createModule({
 	name: 'form',
 	initialState: Map({
-		[FORM_LOGIN]: _.cloneDeep(DEFAULT_FIELDS).merge(DEFAULT_FORM_FIELDS[FORM_LOGIN]),
+		[MAIN_FORM]: _.cloneDeep(DEFAULT_FIELDS).merge(DEFAULT_FORM_FIELDS[MAIN_FORM]),
 	}),
 	transformations: {
 		..._.cloneDeep(TransformModules(DEFAULT_FIELDS)),
-		set: {
-			reducer: (state, { payload }) => {
-				state = state.setIn([payload.form, payload.field], payload.value);
-
-				return state;
-			},
-		},
-
-		setIn: {
-			reducer: (state, { payload }) => {
-				Object.keys(payload.params).forEach((field) => {
-					state = state.setIn([payload.form, field], payload.params[field]);
-				});
-
-				return state;
-			},
-		},
 
 		setFormValue: {
 			reducer: (state, { payload }) => {
-				state = state.setIn([payload.form, 'error'], null);
-
-				const field = state.getIn([payload.form, payload.field]);
-
-				state = state.setIn([payload.form, payload.field], Object.assign({}, field, {
-					value: payload.value,
-					error: null,
-				}));
+				state = state.setIn([payload.form, ...payload.field], payload.value);
 
 				return state;
 			},

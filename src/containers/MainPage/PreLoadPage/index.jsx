@@ -1,8 +1,16 @@
 import React, { Component } from 'react';
 import { Form, Button } from 'semantic-ui-react';
+import PropTypes from 'prop-types';
+import connect from 'react-redux/es/connect/connect';
 import TextInput from '../../../components/Forms/TextInput';
+import FormActions from '../../../actions/FormActions';
+import { MAIN_FORM } from '../../../constants/FormConstants';
 
 class PreLoadPage extends Component {
+
+	componentDidMount() {
+		this.props.clearForm();
+	}
 
 	render() {
 		return (
@@ -11,12 +19,12 @@ class PreLoadPage extends Component {
 					Please enter your private key
 					<TextInput
 						className="wide"
-						onChange={(value) => this.onChange(value)}
-						// value={this.props.value}
+						onChange={(value) => this.props.setFormValue(['privateKey'], value)}
+						value={this.props.value}
 					/>
 				</Form.Field>
 				<div className="button-wrapper ta-center">
-					<Button className="button-wrapper submit-button" onClick={(e) => this.onClick(e)} secondary type="button" content="Submit" />
+					<Button className="button-wrapper submit-button" onClick={(e) => this.props.onClick(e)} secondary type="button" content="Submit" />
 				</div>
 			</div>
 		);
@@ -24,6 +32,24 @@ class PreLoadPage extends Component {
 
 }
 
-PreLoadPage.propTypes = {};
+PreLoadPage.propTypes = {
+	value: PropTypes.string,
+	onClick: PropTypes.func,
+	setFormValue: PropTypes.func.isRequired,
+	clearForm: PropTypes.func.isRequired,
+};
 
-export default PreLoadPage;
+PreLoadPage.defaultProps = {
+	value: '',
+	onClick: () => {},
+};
+
+export default connect(
+	(state) => ({
+		value: state.form.getIn([MAIN_FORM, 'privateKey']),
+	}),
+	(dispatch) => ({
+		setFormValue: (field, value) => dispatch(FormActions.setFormValue(MAIN_FORM, field, value)),
+		clearForm: () => dispatch(FormActions.clearForm(MAIN_FORM)),
+	}),
+)(PreLoadPage);

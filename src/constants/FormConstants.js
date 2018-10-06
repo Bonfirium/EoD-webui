@@ -1,2 +1,2 @@
 /* eslint-disable import/prefer-default-export */
-export const FORM_LOGIN = 'login';
+export const MAIN_FORM = 'mainForm';
