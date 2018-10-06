@@ -15,16 +15,19 @@ export default class GameComponent extends BaseComponent {
 		const background = new Background();
 		this.container.addChild(background.container);
 		const map = gen_test();
-		this.drawRooms(map);
+		const rooms = [];
+		this.drawRooms(map, rooms);
 		this.drawDoors(map);
+		const hero = new Moveable(Images.hero1, { room: rooms[0] });
+		this.container.addChild(hero.container);
 	}
 
-	drawRooms(map) {
+	drawRooms(map, rooms) {
 		const roomsCoordainates = generateRoomsCoordainates(map);
 		for (let i = 0; i < roomsCoordainates.length; i++) {
 			const { x, y } = roomsCoordainates[i];
-			const room = new Room(x, y, i);
-			this.container.addChild(room.container);
+			rooms.push(new Room(x, y, i));
+			this.container.addChild(rooms[rooms.length - 1].container);
 		}
 
 	}
