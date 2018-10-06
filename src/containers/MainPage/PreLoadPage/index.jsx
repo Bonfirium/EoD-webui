@@ -38,16 +38,15 @@ class PreLoadPage extends Component {
 
 PreLoadPage.propTypes = {
 	value: PropTypes.string,
-	onClick: PropTypes.func,
 	setFormValue: PropTypes.func.isRequired,
 	clearForm: PropTypes.func.isRequired,
-	login: PropTypes.func.isRequired,
+	login: PropTypes.func,
 	error: PropTypes.any.isRequired,
 };
 
 PreLoadPage.defaultProps = {
 	value: '',
-	onClick: () => {},
+	login: () => {},
 };
 
 export default connect(
