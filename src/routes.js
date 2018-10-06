@@ -3,6 +3,7 @@ import { Route, Switch } from 'react-router';
 
 import App from './containers/App';
 import Dashboard from './containers/Dashboard';
+import StartPage from './containers/StartPage';
 
 export default class Routes extends React.Component {
 
@@ -10,7 +11,8 @@ export default class Routes extends React.Component {
 		return (
 			<App>
 				<Switch>
-					<Route path="/" component={Dashboard} />
+					<Route exact path="/" component={Dashboard} />
+					<Route exact path="/start" component={StartPage} />
 				</Switch>
 			</App>
 		);
