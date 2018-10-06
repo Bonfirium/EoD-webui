@@ -2,6 +2,7 @@ import thunk from 'redux-thunk';
 import { applyMiddleware, combineReducers, createStore, compose } from 'redux';
 
 import { routerMiddleware, routerReducer } from 'react-router-redux';
+import { EchoJSReducer } from 'echojs-redux';
 
 import history from './history';
 import reducers from './reducers';
@@ -15,6 +16,7 @@ const store = createStore(
 	combineReducers({
 		...reducers,
 		router: routerReducer,
+		echojs: EchoJSReducer.reducer,
 	}), {},
 	compose(
 		applyMiddleware(thunk),

@@ -112,8 +112,15 @@ module.exports = {
 		new CleanWebpackPlugin(['dist']),
 		new webpack.DefinePlugin({
 			__API_URL__: JSON.stringify(configFile.api),
+			__NODE_ADDRESS__: JSON.stringify(configFile.node_address),
+			__NODE_ADDRESS_EXTRA__: JSON.stringify(configFile.node_address_extra),
 		}),
 		HTMLWebpackPluginConfig,
 		extractSass,
 	],
+	node: {
+		fs: 'empty',
+		net: 'empty',
+		tls: 'empty',
+	}
 };
