@@ -36,6 +36,14 @@ class ContractActionsClass extends BaseActionsClass {
     
         return tr.broadcast();
     };
+	
+     getData(subscribeObject) {
+		return async (dispatch) => {
+			if (subscribeObject.type === 'block') {
+				console.log(subscribeObject)
+			}
+		};
+     }	
 
     callContract(code) {
         return async (dispatch, getState) => {
