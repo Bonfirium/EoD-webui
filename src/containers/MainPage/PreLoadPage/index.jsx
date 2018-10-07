@@ -6,13 +6,11 @@ import TextInput from '../../../components/Forms/TextInput';
 import FormActions from '../../../actions/FormActions';
 import AuthAction from '../../../actions/AuthAction';
 import { MAIN_FORM } from '../../../constants/FormConstants';
-import initPixi from '../../../game-core/app';
 
 class PreLoadPage extends Component {
 
 	componentDidMount() {
 		this.props.clearForm();
-		initPixi();
 	}
 
 	render() {
