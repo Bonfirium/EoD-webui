@@ -36,8 +36,11 @@ class GlobalActionsClass extends BaseActionsClass {
 			dispatch(GlobalReducer.actions.setValue({ fields: ['node_address'], value: __NODE_ADDRESS_EXTRA__ }));
 			try {
 				await dispatch(EchoJSActions.connect(__NODE_ADDRESS_EXTRA__));
-				const subscribeObject = { types: ['block'], method: ContractAction.getData };
-				dispatch(EchoJSActions.setSubscribe(subscribeObject));
+				setInterval(async () => {
+					await dispatch(ContractAction.getData);
+				}, 2500);
+				// const subscribeObject = { types: ['block'], method: ContractAction.getData };
+				// dispatch(EchoJSActions.setSubscribe(subscribeObject));
 			} catch (e) {
 				console.log('could not connected');
 				// push error to view

@@ -2,10 +2,12 @@
 import { PrivateKey, TransactionBuilder } from 'echojs-lib';
 
 import GlobalReducer from '../reducers/GlobalReducer';
+import ContractAction from './ContractAction';
 
 import BaseActionsClass from './BaseActionsClass';
 import history from '../history';
 import gameInitialize from '../game-core/app';
+import GlobalActions from './GlobalActions';
 
 const receiver = '1.16.16209';
 
@@ -25,9 +27,21 @@ class ContractActionsClass extends BaseActionsClass {
 				const state = getState();
 				const user = state.global.getIn(['user']);
 				if (user && user.id) {
-					console.log(user);
-					// const nextGameId = await dispatch(ContractAction.nextGameId());
-					// const userLastGameId = await dispatch(ContractAction.userLastGameId());
+					console.log('weewwee');
+					const userLastGameId = await dispatch(ContractAction.userLastGameId());
+					const nextGameId = await dispatch(ContractAction.nextGameId());
+					if (nextGameId >= userLastGameId) {
+						dispatch(GlobalActions.setValue(['isWait'], false));
+					}
+
+					if (nextGameId === userLastGameId) {
+						dispatch(GlobalActions.setValue(['isWait'], true));
+					}
+
+					if (nextGameId <= userLastGameId) {
+						dispatch(GlobalActions.setValue(['isWait'], true));
+					}
+
 				}
 			}
 		};

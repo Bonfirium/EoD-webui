@@ -81,7 +81,12 @@ class AuthActionsClass extends BaseActionsClass {
 
 	startGame() {
 		return async (dispatch) => {
+			console.log(await dispatch(ContractAction.userLastGameId()));
+
 			await dispatch(ContractAction.findGame());
+			console.log(await dispatch(ContractAction.userLastGameId()));
+
+
 		};
 	}
 
