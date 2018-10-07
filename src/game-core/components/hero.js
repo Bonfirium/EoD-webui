@@ -17,6 +17,7 @@ export default class Hero extends Moveable {
 			room
 		});
 
+		this.isHero = true;
 		this.id = id;
 		this._treasureCount = 0;
 		this.isAlive = true;

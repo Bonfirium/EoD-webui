@@ -17,6 +17,7 @@ export default class Monster extends Moveable {
 			room
 		});
 
+		this.isHero = false;
 		this.id = id;
 		this._treasureCount = 0;
 

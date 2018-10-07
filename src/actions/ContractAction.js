@@ -25,9 +25,6 @@ class ContractActionsClass extends BaseActionsClass {
 	 */
 	constructor() {
 		super(GlobalReducer);
-		setTimeout(()=>{
-			this.createGame()
-		},2000)
 	}
 
 	getData(subscribeObject) {

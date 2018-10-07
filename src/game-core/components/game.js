@@ -7,7 +7,6 @@ import Door from './door';
 import { MAP_VALUES } from '../constants/logic.constants';
 import generateRoomsCoordinates from '../utils/rooms.generator';
 import generateDoorCoordinates from '../utils/doors.generator';
-import { gen_test } from '../../../gen_test_data';
 import { Images } from '../loaders/images';
 import Hero from './hero';
 import genRandomArray from '../utils/random';
@@ -34,9 +33,14 @@ export default class GameComponent extends BaseComponent {
 		/** @type {[Monster]} */
 		this.monsters = [];
 
+		this.isAlreadyMoved = false;
+		this.isHeroMove = true;
+		this.ownUser = null;
 
 		this._drawRooms(map);
 		this._drawDoors(map);
+
+		let k = false;
 
 	}
 
@@ -76,11 +80,19 @@ export default class GameComponent extends BaseComponent {
 		this.rooms.forEach((room) => {
 
 			room.onClick(() => {
-				cb(room.id);
-				this.moveToRoom(userId, room.id);
+				if (!this.isAlreadyMoved && this.isHeroMove === this.ownUser.isHero) {
+					this.isAlreadyMoved = true;
+					cb(room.id);
+					this._moveToRoom(userId, room.id);
+				}
 			});
 
 		});
+
+		const hero = this.heroes.find((user) => user.id === userId);
+		const monster = this.monsters.find((user) => user.id === userId);
+
+		this.ownUser = hero || monster;
 	}
 
 	/**
@@ -176,8 +188,9 @@ export default class GameComponent extends BaseComponent {
 	 *
 	 * @param userId
 	 * @param roomId
+	 * @private
 	 */
-	moveToRoom(userId, roomId) {
+	_moveToRoom(userId, roomId) {
 		const room = this.rooms.find((room) => (room.id === roomId));
 		const hero = this.heroes.find((user) => user.id === userId);
 		const monster = this.monsters.find((user) => user.id === userId);
@@ -203,6 +216,14 @@ export default class GameComponent extends BaseComponent {
 			});
 		}
 
+	}
+
+	/**
+	 * true - hero, false - monster
+	 */
+	setSideMove(status) {
+		this.isHeroMove = status;
+		this.isAlreadyMoved = false;
 	}
 
 
