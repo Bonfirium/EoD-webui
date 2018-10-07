@@ -2,39 +2,29 @@ import * as PIXI from 'pixi.js';
 import ObjectComponent from './object';
 import { Images } from '../loaders/images';
 import { ROOM } from '../constants/images.constants';
+import { MAP_VALUES } from '../constants/logic.constants';
 
 /** @typedef {Class} Room */
 export default class Room extends ObjectComponent {
 
-	constructor(x, y, indexX, indexY) {
+	constructor(x, y, indexX, indexY, mapType = MAP_VALUES.ROOM) {
 		super(Images.room, {
 			x,
 			y,
 			height: ROOM.HEIGHT,
 			width: ROOM.WIDTH,
+			mapType
 		});
 
 		this.indexX = indexX;
 		this.indexY = indexY;
 		this.neighbors = [];
+		this.mapType = mapType;
 
 		// Opt-in to interactivity
 		this._sprite.interactive = true;
 
-// Shows hand cursor
 		this._sprite.buttonMode = true;
-
-		this._sprite.on('pointerdown', (hero) => {
-				const neighborRoom = hero.room.find((room) => (room.indexX === this.indexX && room.indexY === this.indexY));
-
-				if (!neighborRoom) {
-					return;
-				}
-
-				hero.moveToRoom(this)
-			}
-		);
-
 
 		// const textSample = new PIXI.Text(`x: ${indexX}, y: ${indexY}`, { font: '8px Snippet',});
 
@@ -44,6 +34,14 @@ export default class Room extends ObjectComponent {
 		// textSample.width= ROOM.WIDTH;
 		// this.container.addChild(textSample)
 
+	}
+
+	/**
+	 *
+	 * @param cb
+	 */
+	onClick(cb) {
+		this._sprite.on('pointerdown', cb);
 	}
 
 }

@@ -14,7 +14,10 @@ export default class Moveable extends ObjectComponent {
 	constructor(texture, { x, y, room }) {
 
 		super(texture, {
-			...room ? { visible: false } : { x, y },
+			...room ? { visible: false } : {
+				x,
+				y
+			},
 			width: MOVEABLE.WIDTH,
 			height: MOVEABLE.HEIGHT,
 		});
@@ -41,6 +44,13 @@ export default class Moveable extends ObjectComponent {
 	 * @param {Room} room
 	 */
 	moveToRoom(room) {
+		// console.log(this.room);
+		const neighbor = this.room.neighbors.find((neighbor) => (neighbor.indexX === room.indexX && room.indexY === neighbor.indexY));
+		// console.log(neighbor);
+		if (!neighbor) {
+			return;
+		}
+
 		this.room = room;
 
 		// todo rafactor this shit
@@ -51,10 +61,8 @@ export default class Moveable extends ObjectComponent {
 		const frames = 30;
 		const xDistance = dest.x - start.x;
 		const xStep = xDistance / frames;
-		console.log(xDistance, xStep);
 		const yDistance = dest.y - start.y;
 		const yStep = yDistance / frames;
-		console.log(yDistance, yStep);
 
 		let tickCount = 0;
 		let interval;

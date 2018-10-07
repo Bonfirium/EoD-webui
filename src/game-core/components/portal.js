@@ -2,6 +2,7 @@ import * as PIXI from 'pixi.js';
 import Room from './room';
 import { Images } from '../loaders/images';
 import { PORTAL } from '../constants/images.constants';
+import { MAP_VALUES } from '../constants/logic.constants';
 
 export default class Portal extends Room {
 
@@ -11,7 +12,8 @@ export default class Portal extends Room {
 	 * @param y
 	 */
 	constructor(x, y, indexX, indexY) {
-		super(x, y, indexX, indexY);
+		super(x, y, indexX, indexY, MAP_VALUES.PORTAL);
+
 
 		this._spritePortal = new PIXI.Sprite(Images.portal);
 

@@ -4,12 +4,12 @@ import Room from './room';
 import Portal from './portal';
 import Treasure from './treasure';
 import Door from './door';
-import Moveable from './moveable';
 import { MAP_VALUES } from '../constants/logic.constants';
 import generateRoomsCoordinates from '../utils/rooms.generator';
 import generateDoorCoordinates from '../utils/doors.generator';
 import { gen_test } from '../../../gen_test_data';
 import { Images } from '../loaders/images';
+import Hero from './hero';
 
 export default class GameComponent extends BaseComponent {
 
@@ -24,16 +24,21 @@ export default class GameComponent extends BaseComponent {
 		/** @type {[Portal]} */
 		this.portals = [];
 
+		/** @type {[Moveable]} */
+		this.heroes = [];
 
 		const map = gen_test();
+
 		this.drawRooms(map);
 		this.drawDoors(map);
 
-		const hero = new Moveable(Images.hero1, { room: this.rooms[0] });
-		this.container.addChild(hero.container);
-		this.drawRooms(map);
-		this.drawDoors(map);
-		const hero1 = new Moveable(Images.hero1, { room: this.rooms[0] });
+		const heroId = '0x45fd454gf56h4+6reg654r65f4g65d4d65g46d5f4g654ww646qeq4f654we34t654w65r46wrr4tg65e4r';
+		const hero1 = new Hero(Images.hero1, {
+			room: this.rooms[0],
+			id: heroId,
+		});
+		this.heroes.push(hero1);
+		this.initHero(heroId);
 		// const hero2 = new Moveable(Images.hero2, { room: this.rooms[5] });
 		// const hero3 = new Moveable(Images.hero3, { room: this.rooms[10] });
 		// const hero4 = new Moveable(Images.hero4, { room: this.rooms[15] });
@@ -42,15 +47,14 @@ export default class GameComponent extends BaseComponent {
 		// this.container.addChild(hero3.container);
 		// this.container.addChild(hero4.container);
 
-		const ko = (min, max) => Math.floor(Math.random() * (max - min + 1)) + min;
+		// const ko = (min, max) => Math.floor(Math.random() * (max - min + 1)) + min;
 
-		setInterval(() => {
-			hero1.moveToRoom(hero1.room.neighbors[ko(0, hero1.room.neighbors.length - 1)]);
-			// hero2.moveToRoom(hero2.room.neighbors[ko(0, hero2.room.neighbors.length-1)]);
-			// hero3.moveToRoom(hero3.room.neighbors[ko(0, hero3.room.neighbors.length-1)]);
-			// hero4.moveToRoom(hero4.room.neighbors[ko(0, hero4.room.neighbors.length-1)]);
-		}, 1500);
-
+		// setInterval(() => {
+		// 	hero1.moveToRoom(hero1.room.neighbors[ko(0, hero1.room.neighbors.length - 1)]);
+		// hero2.moveToRoom(hero2.room.neighbors[ko(0, hero2.room.neighbors.length-1)]);
+		// hero3.moveToRoom(hero3.room.neighbors[ko(0, hero3.room.neighbors.length-1)]);
+		// hero4.moveToRoom(hero4.room.neighbors[ko(0, hero4.room.neighbors.length-1)]);
+		// }, 1500);
 	}
 
 	/**
@@ -124,5 +128,39 @@ export default class GameComponent extends BaseComponent {
 		}
 
 	}
+
+	initHero(heroId) {
+		this.rooms.forEach((room) => {
+			const user = this.heroes.find((user) => user.id === heroId);
+
+			if (!user) {
+				return;
+			}
+
+			room.onClick(() => {
+				this.moveToRoom(heroId, room.indexX, room.indexY);
+			});
+		});
+	}
+
+	/**
+	 *
+	 * @param heroId
+	 * @param indexX
+	 * @param indexy
+	 */
+	moveToRoom(heroId, indexX, indexY) {
+		const room = this.rooms.find((room) => (room.indexX === indexX && room.indexY === indexY));
+		const hero = this.heroes.find((user) => user.id === heroId);
+
+		if (room && hero) {
+			hero.moveToRoom(room);
+
+			if (room.mapType === MAP_VALUES.TREASURE) {
+				room.visitedByHero(hero);
+			}
+		}
+	}
+
 
 }

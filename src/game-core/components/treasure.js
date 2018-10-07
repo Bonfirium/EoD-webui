@@ -2,6 +2,7 @@ import * as PIXI from 'pixi.js';
 import Room from './room';
 import { Images } from '../loaders/images';
 import { TREASURE } from '../constants/images.constants';
+import { MAP_VALUES } from '../constants/logic.constants';
 
 export default class Treasure extends Room {
 
@@ -11,17 +12,34 @@ export default class Treasure extends Room {
 	 * @param y
 	 */
 	constructor(x, y, indexX, indexY) {
-		super(x, y, indexX, indexY);
+		super(x, y, indexX, indexY, MAP_VALUES.TREASURE);
 
-		this._spritePortal = new PIXI.Sprite(Images.chest);
+		this._spriteTreasure = new PIXI.Sprite(Images.chest);
 
-		this._spritePortal.height = TREASURE.WIDTH;
-		this._spritePortal.width = TREASURE.HEIGHT;
+		this._spriteTreasure.height = TREASURE.WIDTH;
+		this._spriteTreasure.width = TREASURE.HEIGHT;
 
-		this._spritePortal.x = x;
-		this._spritePortal.y = y;
+		this._spriteTreasure.x = x;
+		this._spriteTreasure.y = y;
 
-		this.container.addChild(this._spritePortal);
+		this._isVisited = false;
+		this.container.addChild(this._spriteTreasure);
+	}
+
+	/**
+	 *
+	 * @param {Hero} hero
+	 */
+	visitedByHero(hero) {
+
+		if (!this._isVisited) {
+			hero.increaseTreasure();
+			this._isVisited = true;
+		}
+
+		setTimeout(() => {
+			this._spriteTreasure.visible = false;
+		}, 1000);
 	}
 
 }
