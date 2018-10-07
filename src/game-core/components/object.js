@@ -14,4 +14,8 @@ export default class ObjectComponent extends BaseComponent {
 		this.container.addChild(this._sprite);
 	}
 
+	getSpiteCoords() {
+		return { x: this._sprite.x, y: this._sprite.y };
+	}
+
 }

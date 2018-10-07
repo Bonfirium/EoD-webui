@@ -23,8 +23,21 @@ export default class GameComponent extends BaseComponent {
 
 		this.drawRooms(map, rooms);
 		this.drawDoors(map);
-		const hero = new Moveable(Images.hero1, { room: rooms[0] });
-		this.container.addChild(hero.container);
+		const hero1 = new Moveable(Images.hero1, { room: rooms[0] });
+		const hero2 = new Moveable(Images.hero2, { room: rooms[5] });
+		const hero3 = new Moveable(Images.hero3, { room: rooms[10] });
+		const hero4 = new Moveable(Images.hero4, { room: rooms[15] });
+		this.container.addChild(hero1.container);
+		this.container.addChild(hero2.container);
+		this.container.addChild(hero3.container);
+		this.container.addChild(hero4.container);
+		setTimeout(() => {
+			console.log('move');
+			hero1.moveToRoom(rooms[1]);
+			hero2.moveToRoom(rooms[6]);
+			hero3.moveToRoom(rooms[11]);
+			hero4.moveToRoom(rooms[16]);
+		}, 2000);
 	}
 
 	drawRooms(map, rooms) {
@@ -43,6 +56,7 @@ export default class GameComponent extends BaseComponent {
 					break;
 				}
 				case MAP_VALUES.TREASURE: {
+					console.log('chlen');
 					containerObject = new Treasure(x, y);
 					break;
 				}

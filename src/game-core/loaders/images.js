@@ -37,14 +37,24 @@ export default function loadImages() {
 	return new Promise((resolve) => {
 		const loader = new PIXI.loaders.Loader();
 		const imagesToLoad = {
-			chest, door, doorInverted,
-			hero1, hero2, hero3, hero4,
-			monster1, monster2, monster3, monster4,
-			portal, room, background,
+			chest,
+			door,
+			doorInverted,
+			hero1,
+			hero2,
+			hero3,
+			hero4,
+			monster1,
+			monster2,
+			monster3,
+			monster4,
+			portal,
+			room,
+			background,
 		};
 		Object.keys(imagesToLoad).forEach((name) => { loader.add(name, imagesToLoad[name]); });
 		loader.load((_, resources) => {
-			Object.keys(resources).forEach((name) => { Images[name] = resources[name].texture });
+			Object.keys(resources).forEach((name) => { Images[name] = resources[name].texture; });
 			resolve();
 		});
 	});
