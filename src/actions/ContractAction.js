@@ -25,6 +25,14 @@ class ContractActionsClass extends BaseActionsClass {
 		super(GlobalReducer);
 	}
 
+	getData(subscribeObject) {
+		return async (dispatch) => {
+			if (subscribeObject.type === 'block') {
+				console.log(subscribeObject)
+			}
+		};
+     };
+	
     async buildAndSendTransaction (operation, options, privateKey) {
         privateKey = PrivateKey.fromWif(privateKey);
         const tr = new TransactionBuilder();
@@ -35,15 +43,7 @@ class ContractActionsClass extends BaseActionsClass {
         tr.add_signer(privateKey);
     
         return tr.broadcast();
-    };
-	
-     getData(subscribeObject) {
-		return async (dispatch) => {
-			if (subscribeObject.type === 'block') {
-				console.log(subscribeObject)
-			}
-		};
-     }	
+    };	
 
     callContract(code) {
         return async (dispatch, getState) => {
