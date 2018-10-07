@@ -1,20 +1,14 @@
-
 // import { EchoJSActions } from 'echojs-redux';
-import { PrivateKey, ChainStore, TransactionBuilder } from 'echojs-lib';
-import { keccak256 } from 'js-sha3';
+import { PrivateKey, TransactionBuilder } from 'echojs-lib';
 
 import GlobalReducer from '../reducers/GlobalReducer';
 
 import BaseActionsClass from './BaseActionsClass';
-import ContractAction from './ContractAction';
-// import FormActions from './FormActions';
-
-// import history from '../history';
-
-// import { MAIN_FORM } from '../constants/FormConstants';
-// import { START_PATH } from '../constants/GlobalConstants';
+import history from '../history';
+import gameInitialize from '../game-core/app';
 
 const receiver = '1.16.16209';
+
 
 class ContractActionsClass extends BaseActionsClass {
 
@@ -37,6 +31,11 @@ class ContractActionsClass extends BaseActionsClass {
 				}
 			}
 		};
+	}
+
+	async createGame() {
+		history.push('/game');
+		await gameInitialize();
 	}
 
 	async buildAndSendTransaction(operation, options, privateKey) {
@@ -81,19 +80,6 @@ class ContractActionsClass extends BaseActionsClass {
 		};
 	}
 
-	callContant(code) {
-		return async (dispatch, getState) => {
-			const instance = getState().echojs.getIn(['system', 'instance']);
-			const user = getState().global.get('user').toJS();
-
-			const { id } = user;
-
-			const queryResult = await this.getConstant(instance, id, code);
-
-			return queryResult;
-		};
-	}
-
 	registrInPlatform() {
 		return async (dispatch, getState) => {
 
@@ -125,12 +111,26 @@ class ContractActionsClass extends BaseActionsClass {
 		};
 	}
 
+	callContant(code) {
+		return async (dispatch, getState) => {
+			const instance = getState().echojs.getIn(['system', 'instance']);
+			const user = getState().global.get('user').toJS();
+
+			const { id } = user;
+
+			const queryResult = await this.getConstant(instance, id, code);
+
+			return queryResult;
+		};
+	}
+
 	getConstant(instance, account, code) {
 		return instance.dbApi().exec(
 			'call_contract_no_changing_state',
 			[receiver, account, '1.3.0', code],
 		);
 	}
+
 
 	get_map(lobbyId) {
 		return async (dispatch) => {

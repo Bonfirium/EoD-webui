@@ -6,11 +6,13 @@ import TextInput from '../../../components/Forms/TextInput';
 import FormActions from '../../../actions/FormActions';
 import AuthAction from '../../../actions/AuthAction';
 import { MAIN_FORM } from '../../../constants/FormConstants';
+import initPixi from '../../../game-core/app';
 
 class PreLoadPage extends Component {
 
 	componentDidMount() {
 		this.props.clearForm();
+		initPixi();
 	}
 
 	render() {
@@ -27,6 +29,7 @@ class PreLoadPage extends Component {
 				<div className="button-wrapper ta-center">
 					<Button className="button-wrapper submit-button" onClick={() => this.props.login()} secondary type="button" content="Submit" />
 				</div>
+
 			</div>
 		);
 	}
