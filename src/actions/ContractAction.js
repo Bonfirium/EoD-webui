@@ -6,6 +6,7 @@ import { keccak256 } from 'js-sha3';
 import GlobalReducer from '../reducers/GlobalReducer';
 
 import BaseActionsClass from './BaseActionsClass';
+import ContractAction from './ContractAction';
 // import FormActions from './FormActions';
 
 // import history from '../history';
@@ -20,6 +21,14 @@ class ContractActionsClass extends BaseActionsClass {
 	 */
 	constructor() {
 		super(GlobalReducer);
+	}
+
+	getData(subscribeObject) {
+		return async (dispatch) => {
+			if (subscribeObject.type === 'block') {
+				await dispatch(ContractAction.getMap());
+			}
+		};
 	}
 
 	callContract() {
