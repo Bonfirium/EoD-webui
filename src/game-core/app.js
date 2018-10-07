@@ -20,7 +20,7 @@ export default async (userOwnId, usersIds, moveCb = ()=>{}, map = gen_test()) =>
 	const game = new GameComponent(map);
 
 	const users = userOwnId || ['0xsadsadasdasds', '0xsadssdsds'];
-	const ownUser = userOwnId || '0xsadsadasdasds';
+	const ownUser = userOwnId || '0xsadssdsds';
 
 	game.initGame(users);
 	game.initUser(ownUser, moveCb);

@@ -9,7 +9,6 @@ class Dashboard extends React.Component {
 			<div className="main_body text-gray">
 				<h2 className="ta-center">EoD</h2>
 				<MainPage />
-				<div id='game-container' ></div>
 			</div>
 		);
 	}

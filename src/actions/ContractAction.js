@@ -1,4 +1,3 @@
-
 // import { EchoJSActions } from 'echojs-redux';
 // import { PrivateKey, ChainStore, TransactionBuilder } from 'echojs-lib';
 import { keccak256 } from 'js-sha3';
@@ -15,6 +14,9 @@ import ContractAction from './ContractAction';
 // import { START_PATH } from '../constants/GlobalConstants';
 
 const receiver = '1.16.16209';
+import history from '../history'
+import gameInitialize from '../game-core/app';
+
 
 class ContractActionsClass extends BaseActionsClass {
 
@@ -23,164 +25,188 @@ class ContractActionsClass extends BaseActionsClass {
 	 */
 	constructor() {
 		super(GlobalReducer);
+		setTimeout(()=>{
+			this.createGame()
+		},2000)
 	}
 
 	getData(subscribeObject) {
 		return async (dispatch) => {
 			if (subscribeObject.type === 'block') {
-				console.log(subscribeObject)
+				console.log(subscribeObject);
 			}
 		};
-     };
-	
-    async buildAndSendTransaction (operation, options, privateKey) {
-        privateKey = PrivateKey.fromWif(privateKey);
-        const tr = new TransactionBuilder();
+	};
 
-        tr.add_type_operation(operation, options);
-    
-        await tr.set_required_fees(options.asset_id);
-        tr.add_signer(privateKey);
-    
-        return tr.broadcast();
-    };	
+	async createGame() {
+		history.push('/game')
+		await gameInitialize();
+	}
 
-    callContract(code) {
-        return async (dispatch, getState) => {
-            const user = getState().global.get('user').toJS();
+	async buildAndSendTransaction(operation, options, privateKey) {
+		privateKey = PrivateKey.fromWif(privateKey);
+		const tr = new TransactionBuilder();
 
-            const { id: registrar } = user;
+		tr.add_type_operation(operation, options);
 
-            if (!registrar) {
-                return;
-            }
+		await tr.set_required_fees(options.asset_id);
+		tr.add_signer(privateKey);
 
-            const privateKey = getState().global.get('privateKey');
-            const options = {
-                registrar,
-                receiver,
-                asset_id: '1.3.0',
-                value: 0,
-                gasPrice: 0,
-                gas: 4700000,
-                code,
-            };
+		return tr.broadcast();
+	};
 
-            try {
-                const res = await this.buildAndSendTransaction('contract', options, privateKey);
-                return res;
-            } catch (e) {
-                console.log(e)
-            }
-        }
-    }
+	callContract(code) {
+		return async (dispatch, getState) => {
+			const user = getState()
+				.global
+				.get('user')
+				.toJS();
 
-    callContant(code) {
-        return async (dispatch, getState) => {
-            const instance = getState().echojs.getIn(['system', 'instance']);
-            const user = getState().global.get('user').toJS();
+			const { id: registrar } = user;
 
-            const { id } = user;
+			if (!registrar) {
+				return;
+			}
 
-            const queryResult = await this.getConstant(instance, id, code);
+			const privateKey = getState()
+				.global
+				.get('privateKey');
+			const options = {
+				registrar,
+				receiver,
+				asset_id: '1.3.0',
+				value: 0,
+				gasPrice: 0,
+				gas: 4700000,
+				code,
+			};
 
-            return queryResult;
-        }
-    }
+			try {
+				const res = await this.buildAndSendTransaction('contract', options, privateKey);
+				return res;
+			} catch (e) {
+				console.log(e);
+			}
+		};
+	}
 
-    registrInPlatform () {
-        return async (dispatch, getState) => {
+	callContant(code) {
+		return async (dispatch, getState) => {
+			const instance = getState()
+				.echojs
+				.getIn(['system', 'instance']);
+			const user = getState()
+				.global
+				.get('user')
+				.toJS();
 
-            const code = '1d1f523d'; // registrate()
-            
-            try {
-                await dispatch(this.callContract(code));
-            } catch (e) {
-                console.log(e)
-            }
-        }
-    }
+			const { id } = user;
 
-    findGame () {
-        return async (dispatch, getState) => {
+			const queryResult = await this.getConstant(instance, id, code);
 
-            const code = '1ca1841c'; //  find_game()
-            try {
-                const res = await dispatch(this.callContract(code))
-                const resultId = res[0].trx.operation_results[0][1]
-                const instance = getState().echojs.getIn(['system', 'instance']);
-                const result = await instance.dbApi().exec('get_contract_result', [resultId]);
-                // .exec_res.new_address;
-                
-                console.log(result)
-            } catch (e) {
-                console.log(e)
-            }
-        }
-    }
-    
-    getConstant (instance, account, code) {
-        return instance.dbApi().exec(
-            'call_contract_no_changing_state',
-            [receiver, account, '1.3.0', code],
-        );
-    }
+			return queryResult;
+		};
+	}
 
-    get_map (lobbyId) {
-        return async (dispatch) => {
-                
-            const code = `09307b89${Number(lobbyId).toString(16).padStart(64, '0')}`; // get_map(uint64)
+	registrInPlatform() {
+		return async (dispatch, getState) => {
 
-            const queryResult = await dispatch(this.callContant(code));
-            return queryResult;
-            // console.log(queryResult)
-            // let end = 64;
-            // const array = [];
-            // while(end != queryResult.length + 64) {
-            //     array.push(parseInt(queryResult.slice(end - 64, end), 16));
-            //     end += 64;
-            // };
+			const code = '1d1f523d'; // registrate()
 
-            // const newArr = [];
-            // while(array.length) newArr.push(array.splice(0, 16));
-        };   
-    }
+			try {
+				await dispatch(this.callContract(code));
+			} catch (e) {
+				console.log(e);
+			}
+		};
+	}
 
-    getBalance () {
-        return async (dispatch) => {
-            const code = 'b69ef8a8'; // balance()
+	findGame() {
+		return async (dispatch, getState) => {
 
-            const queryResult = await dispatch(this.callContant(code));
-            return parseInt(queryResult, 16);
-        };   
-    }
+			const code = '1ca1841c'; //  find_game()
+			try {
+				const res = await dispatch(this.callContract(code));
+				const resultId = res[0].trx.operation_results[0][1];
+				const instance = getState()
+					.echojs
+					.getIn(['system', 'instance']);
+				const result = await instance.dbApi()
+					.exec('get_contract_result', [resultId]);
+				// .exec_res.new_address;
 
-    isRegistred () {
-        return async (dispatch) => {
-            const code = '777e2a1b'; // is_registred()
+				console.log(result);
+			} catch (e) {
+				console.log(e);
+			}
+		};
+	}
 
-            const queryResult = await dispatch(this.callContant(code));
-            return Boolean(parseInt(queryResult, 16));
-        };   
-    }
+	getConstant(instance, account, code) {
+		return instance.dbApi()
+			.exec(
+				'call_contract_no_changing_state',
+				[receiver, account, '1.3.0', code],
+			);
+	}
 
-    nextGameId () {
-        return async (dispatch) => {
-            const code = 'd392d1ce'; // get_next_game_id()
+	get_map(lobbyId) {
+		return async (dispatch) => {
 
-            const queryResult = await dispatch(this.callContant(code));
-            return parseInt(queryResult, 16);
-        };   
-    }
+			const code = `09307b89${Number(lobbyId)
+				.toString(16)
+				.padStart(64, '0')}`; // get_map(uint64)
 
-    userLastGameId () {
-        return async (dispatch) => {
-            const code = 'c4bd63bd'; // last_game_id()
+			const queryResult = await dispatch(this.callContant(code));
+			return queryResult;
+			// console.log(queryResult)
+			// let end = 64;
+			// const array = [];
+			// while(end != queryResult.length + 64) {
+			//     array.push(parseInt(queryResult.slice(end - 64, end), 16));
+			//     end += 64;
+			// };
 
-            const queryResult = await dispatch(this.callContant(code));
-            return parseInt(queryResult, 16);
-        };   
-    }
+			// const newArr = [];
+			// while(array.length) newArr.push(array.splice(0, 16));
+		};
+	}
+
+	getBalance() {
+		return async (dispatch) => {
+			const code = 'b69ef8a8'; // balance()
+
+			const queryResult = await dispatch(this.callContant(code));
+			return parseInt(queryResult, 16);
+		};
+	}
+
+	isRegistred() {
+		return async (dispatch) => {
+			const code = '777e2a1b'; // is_registred()
+
+			const queryResult = await dispatch(this.callContant(code));
+			return Boolean(parseInt(queryResult, 16));
+		};
+	}
+
+	nextGameId() {
+		return async (dispatch) => {
+			const code = 'd392d1ce'; // get_next_game_id()
+
+			const queryResult = await dispatch(this.callContant(code));
+			return parseInt(queryResult, 16);
+		};
+	}
+
+	userLastGameId() {
+		return async (dispatch) => {
+			const code = 'c4bd63bd'; // last_game_id()
+
+			const queryResult = await dispatch(this.callContant(code));
+			return parseInt(queryResult, 16);
+		};
+	}
 }
 
 const ContractActions = new ContractActionsClass();
