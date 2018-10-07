@@ -1,19 +1,31 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { Button, Menu } from 'semantic-ui-react';
+import connect from 'react-redux/es/connect/connect';
+import AuthAction from '../../actions/AuthAction';
 
 class StartPage extends Component {
 
+	componentDidMount() {
+		this.props.getAccountInfo();
+	}
+
 	render() {
+		const { balance } = this.props;
+		let { user } = this.props;
+		if (user && Object.keys(user).length > 0) {
+			user = user.toJS();
+		}
+
 		return (
 			<React.Fragment>
 				<div className="header-center-wrap">
 					<Menu stackable className="header-wrap">
 						<Menu.Item className="semi-wide" as="div">
-							{this.props.userDisplayName}
+							{(user && user.name) || ''}
 						</Menu.Item>
 						<Menu.Item className="semi-wide" position="right">
-							{this.props.tokensAmount}
+							{`Tokens: ${balance || 0}`}
 						</Menu.Item>
 					</Menu>
 				</div>
@@ -26,7 +38,7 @@ class StartPage extends Component {
 						</h1>
 
 						<div className="button-wrapper ta-center">
-							<Button className="button-wrapper Big submit-button" primary content="Start game" />
+							<Button className="button-wrapper Big submit-button" onClick={() => this.props.startGame()} primary content="Start game" />
 						</div>
 					</div>
 
@@ -38,13 +50,26 @@ class StartPage extends Component {
 }
 
 StartPage.propTypes = {
-	userDisplayName: PropTypes.string,
-	tokensAmount: PropTypes.string,
+	user: PropTypes.object,
+	balance: PropTypes.number,
+	getAccountInfo: PropTypes.func,
+	startGame: PropTypes.func,
 };
 
 StartPage.defaultProps = {
-	userDisplayName: 'UserName',
-	tokensAmount: 'TokensAmount',
+	user: {},
+	balance: 0,
+	getAccountInfo: () => {},
+	startGame: () => {},
 };
 
-export default StartPage;
+export default connect(
+	(state) => ({
+		user: state.global.getIn(['user']),
+		balance: state.global.getIn(['balance']),
+	}),
+	(dispatch) => ({
+		getAccountInfo: () => dispatch(AuthAction.getAccountInfo()),
+		startGame: () => dispatch(AuthAction.startGame()),
+	}),
+)(StartPage);

@@ -5,7 +5,6 @@ import GlobalReducer from '../reducers/GlobalReducer';
 import BaseActionsClass from './BaseActionsClass';
 import ContractAction from './ContractAction';
 
-import history from '../history';
 
 class GlobalActionsClass extends BaseActionsClass {
 
@@ -37,7 +36,6 @@ class GlobalActionsClass extends BaseActionsClass {
 			dispatch(GlobalReducer.actions.setValue({ fields: ['node_address'], value: __NODE_ADDRESS_EXTRA__ }));
 			try {
 				await dispatch(EchoJSActions.connect(__NODE_ADDRESS_EXTRA__));
-				history.push('/');
 				const subscribeObject = { types: ['block'], method: ContractAction.getData };
 				dispatch(EchoJSActions.setSubscribe(subscribeObject));
 			} catch (e) {

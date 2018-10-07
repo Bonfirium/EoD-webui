@@ -6,7 +6,7 @@ import TransformModules from '../utils/TransformModules';
 const DEFAULT_FIELDS = Map({
 	privateKey: null,
 	publicKey: null,
-	user: '',
+	user: {},
 	node_address: '',
 });
 
