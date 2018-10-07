@@ -39,10 +39,10 @@ export default class GameComponent extends BaseComponent {
 		});
 		this.heroes.push(hero1);
 		this.initHero(heroId);
-		// const hero2 = new Moveable(Images.hero2, { room: this.rooms[5] });
-		// const hero3 = new Moveable(Images.hero3, { room: this.rooms[10] });
-		// const hero4 = new Moveable(Images.hero4, { room: this.rooms[15] });
+
 		this.container.addChild(hero1.container);
+
+
 		// this.container.addChild(hero2.container);
 		// this.container.addChild(hero3.container);
 		// this.container.addChild(hero4.container);
@@ -97,6 +97,8 @@ export default class GameComponent extends BaseComponent {
 			this._setNeighbors(currentRoom, neighbors);
 		}
 
+		this.makeAllPortalsAsNeighbors();
+
 	}
 
 	/**
@@ -113,6 +115,19 @@ export default class GameComponent extends BaseComponent {
 			}
 		});
 
+	}
+
+	makeAllPortalsAsNeighbors() {
+		this.portals.forEach((portal) => {
+			this.portals.forEach((neighbor) => {
+				console.log(portal, neighbor);
+				if (neighbor.indexX === portal.indexX && neighbor.indexY === portal.indexY) {
+					return;
+				}
+
+				portal.neighbors.push(neighbor);
+			});
+		});
 	}
 
 	/**
@@ -154,10 +169,15 @@ export default class GameComponent extends BaseComponent {
 		const hero = this.heroes.find((user) => user.id === heroId);
 
 		if (room && hero) {
+
 			hero.moveToRoom(room);
 
 			if (room.mapType === MAP_VALUES.TREASURE) {
 				room.visitedByHero(hero);
+			}
+
+			if (room.mapType === MAP_VALUES.PORTAL) {
+
 			}
 		}
 	}
