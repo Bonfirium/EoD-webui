@@ -5,7 +5,7 @@ import { gen_test } from '../../gen_test_data';
 
 require('babel-polyfill');
 
-export default async (userOwnId, usersIds, moveCb, map = gen_test()) => {
+export default async (userOwnId, usersIds, moveCb = ()=>{}, map = gen_test()) => {
 
 	const pixiWidth = 992;
 	const pixiHeight = 544;
