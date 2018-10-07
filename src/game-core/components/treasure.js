@@ -18,8 +18,8 @@ export default class Treasure extends Room {
 		this._spritePortal.height = TREASURE.WIDTH;
 		this._spritePortal.width = TREASURE.HEIGHT;
 
-		this._spritePortal.x = x + TREASURE.MARGIN;
-		this._spritePortal.y = y + TREASURE.MARGIN;
+		this._spritePortal.x = x;
+		this._spritePortal.y = y;
 
 		this.container.addChild(this._spritePortal);
 	}
