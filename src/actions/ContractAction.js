@@ -1,17 +1,18 @@
 
-import { EchoJSActions } from 'echojs-redux';
-import { PrivateKey, ChainStore, TransactionBuilder } from 'echojs-lib';
+// import { EchoJSActions } from 'echojs-redux';
+// import { PrivateKey, ChainStore, TransactionBuilder } from 'echojs-lib';
 import { keccak256 } from 'js-sha3';
 
 import GlobalReducer from '../reducers/GlobalReducer';
 
 import BaseActionsClass from './BaseActionsClass';
-import FormActions from './FormActions';
+import ContractAction from './ContractAction';
+// import FormActions from './FormActions';
 
-import history from '../history'
+// import history from '../history';
 
-import { MAIN_FORM } from '../constants/FormConstants';
-import { START_PATH } from '../constants/GlobalConstants';
+// import { MAIN_FORM } from '../constants/FormConstants';
+// import { START_PATH } from '../constants/GlobalConstants';
 
 const receiver = '1.16.16209';
 

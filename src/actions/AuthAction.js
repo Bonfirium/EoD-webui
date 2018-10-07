@@ -27,11 +27,11 @@ class AuthActionsClass extends BaseActionsClass {
 	 * @return {function(*)}
 	 */
 	login() {
+
 		return async (dispatch, getState) => {
 
 			// const privateKey = getState().form.getIn([MAIN_FORM, 'privateKey']);
 			const privateKey ='5K5Xo4pKP8Wn5tivpJxEqVvD57XRokxkfHDercEkve7Am2QUKdo';
-
 			try {
 				const publicKey = PrivateKey.fromWif(privateKey).toPublicKey().toString();
 				let userId = await ChainStore.FetchChain('getAccountRefsOfKey', publicKey);
@@ -60,7 +60,6 @@ class AuthActionsClass extends BaseActionsClass {
 
 				history.push(START_PATH);
 			} catch (e) {
-
 				dispatch(FormActions.setFormValue(MAIN_FORM, ['error'], 'wrong key or login error'));
 			}
 		};

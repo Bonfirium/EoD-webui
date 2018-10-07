@@ -3,6 +3,7 @@ import { EchoJSActions } from 'echojs-redux';
 
 import GlobalReducer from '../reducers/GlobalReducer';
 import BaseActionsClass from './BaseActionsClass';
+import ContractAction from './ContractAction';
 
 import history from '../history';
 
@@ -37,6 +38,8 @@ class GlobalActionsClass extends BaseActionsClass {
 			try {
 				await dispatch(EchoJSActions.connect(__NODE_ADDRESS_EXTRA__));
 				history.push('/');
+				const subscribeObject = { types: ['block'], method: ContractAction.getData };
+				dispatch(EchoJSActions.setSubscribe(subscribeObject));
 			} catch (e) {
 				console.log('could not connected');
 				// push error to view
