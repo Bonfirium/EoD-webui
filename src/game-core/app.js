@@ -1,18 +1,31 @@
-require("babel-polyfill");
 import * as PIXI from 'pixi.js';
 import loadResources from './loaders';
 import GameComponent from './components/game';
+import { gen_test } from '../../gen_test_data';
 
-export default async () => {
-// noinspection JSValidateTypes
-	/** @type {PIXI.Application} */
+require('babel-polyfill');
+
+export default async (userOwnId, usersIds, moveCb, map = gen_test()) => {
+
 	const pixiWidth = 992;
 	const pixiHeight = 544;
+
 	const app = new PIXI.Application(pixiWidth, pixiHeight);
-	app.renderer.backgroundColor = 0x484848;
+
 	const gameContainer = document.getElementById('game-container');
 	gameContainer.appendChild(app.view);
 
 	await loadResources();
-	app.stage.addChild(new GameComponent(pixiWidth, pixiHeight).container);
+
+	const game = new GameComponent(map);
+
+	const users = userOwnId || ['0xsadsadasdasds', '0xsadssdsds'];
+	const ownUser = userOwnId || '0xsadsadasdasds';
+
+	game.initGame(users);
+	game.initUser(ownUser, moveCb);
+
+	app.stage.addChild(game.container);
+
+	return game;
 };

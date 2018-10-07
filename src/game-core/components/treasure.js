@@ -42,4 +42,5 @@ export default class Treasure extends Room {
 		}, 1000);
 	}
 
+
 }

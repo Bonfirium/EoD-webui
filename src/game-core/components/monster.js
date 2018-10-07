@@ -1,7 +1,7 @@
 import * as PIXI from 'pixi.js';
 import Moveable from './moveable';
 
-export default class Hero extends Moveable {
+export default class Monster extends Moveable {
 
 	/**
 	 * @param {PIXI.Texture} texture
@@ -19,7 +19,6 @@ export default class Hero extends Moveable {
 
 		this.id = id;
 		this._treasureCount = 0;
-		this.isAlive = true;
 
 	}
 
@@ -29,12 +28,5 @@ export default class Hero extends Moveable {
 
 	getScores() {
 		return this._treasureCount;
-	}
-
-	kill(){
-		this.isAlive = false;
-		setTimeout(() => {
-			this._sprite.visible = false;
-		}, 1000);
 	}
 }

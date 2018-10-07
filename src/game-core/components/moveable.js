@@ -44,9 +44,8 @@ export default class Moveable extends ObjectComponent {
 	 * @param {Room} room
 	 */
 	moveToRoom(room) {
-		// console.log(this.room);
-		const neighbor = this.room.neighbors.find((neighbor) => (neighbor.indexX === room.indexX && room.indexY === neighbor.indexY));
-		// console.log(neighbor);
+		const neighbor = this.room.neighbors.find((neighbor) => (neighbor.id === room.id));
+
 		if (!neighbor) {
 			return;
 		}

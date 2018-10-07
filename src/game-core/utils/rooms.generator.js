@@ -31,6 +31,7 @@ const _getNeighbors = (map, x, y) => {
 			roomDoors.push({
 				x: newX,
 				y: newY,
+				id: `${newX}-${newY}`,
 			});
 		}
 	}

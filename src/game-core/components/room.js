@@ -21,10 +21,14 @@ export default class Room extends ObjectComponent {
 		this.neighbors = [];
 		this.mapType = mapType;
 
+		this.id = `${indexX}-${indexY}`;
+
 		// Opt-in to interactivity
 		this._sprite.interactive = true;
 
 		this._sprite.buttonMode = true;
+
+		// this.onClick = this.onClick.bind(this);
 
 		// const textSample = new PIXI.Text(`x: ${indexX}, y: ${indexY}`, { font: '8px Snippet',});
 
@@ -36,6 +40,7 @@ export default class Room extends ObjectComponent {
 
 	}
 
+
 	/**
 	 *
 	 * @param cb
@@ -43,5 +48,8 @@ export default class Room extends ObjectComponent {
 	onClick(cb) {
 		this._sprite.on('pointerdown', cb);
 	}
+
+
+
 
 }
