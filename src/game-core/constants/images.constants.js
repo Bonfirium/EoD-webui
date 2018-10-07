@@ -19,7 +19,7 @@ export const DOOR = {
 export const PORTAL = {
 	WIDTH: 48,
 	HEIGHT: 48,
-	MARGIN: 8
+	MARGIN: 8,
 };
 
 

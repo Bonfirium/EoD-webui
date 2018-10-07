@@ -18,57 +18,103 @@ export default class GameComponent extends BaseComponent {
 		const background = new Background();
 		this.container.addChild(background.container);
 
-		const map = gen_test();
-		const rooms = [];
+		/** @type {[Room]} */
+		this.rooms = [];
 
-		this.drawRooms(map, rooms);
+		/** @type {[Portal]} */
+		this.portals = [];
+
+
+		const map = gen_test();
+		this.drawRooms(map);
 		this.drawDoors(map);
-		const hero1 = new Moveable(Images.hero1, { room: rooms[0] });
-		const hero2 = new Moveable(Images.hero2, { room: rooms[5] });
-		const hero3 = new Moveable(Images.hero3, { room: rooms[10] });
-		const hero4 = new Moveable(Images.hero4, { room: rooms[15] });
+
+		const hero = new Moveable(Images.hero1, { room: this.rooms[0] });
+		this.container.addChild(hero.container);
+		this.drawRooms(map);
+		this.drawDoors(map);
+		const hero1 = new Moveable(Images.hero1, { room: this.rooms[0] });
+		// const hero2 = new Moveable(Images.hero2, { room: this.rooms[5] });
+		// const hero3 = new Moveable(Images.hero3, { room: this.rooms[10] });
+		// const hero4 = new Moveable(Images.hero4, { room: this.rooms[15] });
 		this.container.addChild(hero1.container);
-		this.container.addChild(hero2.container);
-		this.container.addChild(hero3.container);
-		this.container.addChild(hero4.container);
-		setTimeout(() => {
-			console.log('move');
-			hero1.moveToRoom(rooms[1]);
-			hero2.moveToRoom(rooms[6]);
-			hero3.moveToRoom(rooms[11]);
-			hero4.moveToRoom(rooms[16]);
-		}, 2000);
+		// this.container.addChild(hero2.container);
+		// this.container.addChild(hero3.container);
+		// this.container.addChild(hero4.container);
+
+		const ko = (min, max) => Math.floor(Math.random() * (max - min + 1)) + min;
+
+		setInterval(() => {
+			hero1.moveToRoom(hero1.room.neighbors[ko(0, hero1.room.neighbors.length - 1)]);
+			// hero2.moveToRoom(hero2.room.neighbors[ko(0, hero2.room.neighbors.length-1)]);
+			// hero3.moveToRoom(hero3.room.neighbors[ko(0, hero3.room.neighbors.length-1)]);
+			// hero4.moveToRoom(hero4.room.neighbors[ko(0, hero4.room.neighbors.length-1)]);
+		}, 1500);
+
 	}
 
-	drawRooms(map, rooms) {
+	/**
+	 *
+	 * @param {[[Number]]} map
+	 */
+	drawRooms(map) {
 		const roomsCoordinates = generateRoomsCoordinates(map);
 		for (let i = 0; i < roomsCoordinates.length; i++) {
-			const { x, y, type } = roomsCoordinates[i];
+			const {
+				x, y, indexX, indexY, type,
+			} = roomsCoordinates[i];
 			let containerObject;
 
 			switch (type) {
 				case MAP_VALUES.ROOM: {
-					containerObject = new Room(x, y);
+					containerObject = new Room(x, y, indexX, indexY);
 					break;
 				}
 				case MAP_VALUES.PORTAL: {
-					containerObject = new Portal(x, y);
+					containerObject = new Portal(x, y, indexX, indexY);
+					this.portals.push(containerObject);
 					break;
 				}
 				case MAP_VALUES.TREASURE: {
-					console.log('chlen');
-					containerObject = new Treasure(x, y);
+					containerObject = new Treasure(x, y, indexX, indexY);
 					break;
 				}
 			}
 
-			rooms.push(containerObject);
+			this.rooms.push(containerObject);
 
 			this.container.addChild(containerObject.container);
 		}
 
+		for (let i = 0; i < roomsCoordinates.length; i++) {
+			const { neighbors } = roomsCoordinates[i];
+			const currentRoom = this.rooms[i];
+
+			this._setNeighbors(currentRoom, neighbors);
+		}
+
 	}
 
+	/**
+	 *
+	 * @param {Room} room
+	 * @param {[{x,y}]}neighborsIndexesArray
+	 * @private
+	 */
+	_setNeighbors(room, neighborsIndexesArray) {
+		neighborsIndexesArray.forEach((neighbor) => {
+			const neighborRoom = this.rooms.find((room) => (room.indexX === neighbor.x && room.indexY === neighbor.y));
+			if (neighborRoom) {
+				room.neighbors.push(neighborRoom);
+			}
+		});
+
+	}
+
+	/**
+	 *
+	 * @param {[[Number]]} map
+	 */
 	drawDoors(map) {
 		const roomsCoordinates = generateDoorCoordinates(map);
 		for (let i = 0; i < roomsCoordinates.length; i++) {

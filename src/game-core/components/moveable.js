@@ -3,10 +3,6 @@ import { MOVEABLE, ROOM } from '../constants/images.constants';
 import { MOVEABLE_SPEED } from '../constants/logic.constants';
 import ObjectComponent from './object';
 
-function calcDistnace(x1, x2, y1, y2) {
-
-}
-
 export default class Moveable extends ObjectComponent {
 
 	/**
@@ -36,6 +32,7 @@ export default class Moveable extends ObjectComponent {
 	 * @param {Room} room
 	 */
 	setToRoom(room) {
+		this.room = room;
 		const { x, y } = room.getSpiteCoords();
 		this.set(x + ROOM.WIDTH / 2, y + ROOM.HEIGHT / 2);
 	}
@@ -44,6 +41,8 @@ export default class Moveable extends ObjectComponent {
 	 * @param {Room} room
 	 */
 	moveToRoom(room) {
+		this.room = room;
+
 		// todo rafactor this shit
 		const start = this.getSpiteCoords();
 		const dest = room.getSpiteCoords();
