@@ -37,7 +37,7 @@ class GlobalActionsClass extends BaseActionsClass {
 			try {
 				await dispatch(EchoJSActions.connect(__NODE_ADDRESS_EXTRA__));
 				setInterval(async () => {
-					await dispatch(ContractAction.getData);
+					await dispatch(ContractAction.getData());
 				}, 2500);
 				// const subscribeObject = { types: ['block'], method: ContractAction.getData };
 				// dispatch(EchoJSActions.setSubscribe(subscribeObject));

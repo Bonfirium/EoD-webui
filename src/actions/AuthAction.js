@@ -31,8 +31,8 @@ class AuthActionsClass extends BaseActionsClass {
 
 		return async (dispatch, getState) => {
 
-			// const privateKey = getState().form.getIn([MAIN_FORM, 'privateKey']);
-			const privateKey = '5K5Xo4pKP8Wn5tivpJxEqVvD57XRokxkfHDercEkve7Am2QUKdo';
+			const privateKey = getState().form.getIn([MAIN_FORM, 'privateKey']);
+			// const privateKey = '5K5Xo4pKP8Wn5tivpJxEqVvD57XRokxkfHDercEkve7Am2QUKdo';
 			try {
 				const publicKey = PrivateKey.fromWif(privateKey).toPublicKey().toString();
 				let userId = await ChainStore.FetchChain('getAccountRefsOfKey', publicKey);
@@ -81,10 +81,8 @@ class AuthActionsClass extends BaseActionsClass {
 
 	startGame() {
 		return async (dispatch) => {
-			console.log(await dispatch(ContractAction.userLastGameId()));
 
 			await dispatch(ContractAction.findGame());
-			console.log(await dispatch(ContractAction.userLastGameId()));
 
 
 		};
