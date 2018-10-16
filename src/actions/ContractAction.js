@@ -221,6 +221,16 @@ class ContractActionsClass extends BaseActionsClass {
 		};
 	}
 
+	makeMove(x, y) {
+		return async (dispatch, getState) => {
+			const state = getState();
+			const gameId = state.global.get('gameId');
+			// todo refactor when method ll be ready
+			const code = `qwertyui${Number(gameId)}${Number(x).toString(16)}${Number(y).toString(16).padStart(64, '0')}`; // make move ???
+			return dispatch(this.callContant(code));
+		};
+	}
+
 }
 
 const ContractActions = new ContractActionsClass();
