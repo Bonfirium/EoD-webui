@@ -82,7 +82,7 @@ export default class GameComponent extends BaseComponent {
 			room.onClick(() => {
 				if (!this.isAlreadyMoved && this.isHeroMove === this.ownUser.isHero) {
 					this.isAlreadyMoved = true;
-					cb(room.id);
+					cb(room.indexX, room.indexY);
 					this._moveToRoom(userId, room.id);
 				}
 			});

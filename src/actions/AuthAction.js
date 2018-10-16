@@ -41,7 +41,7 @@ class AuthActionsClass extends BaseActionsClass {
 					return;
 				}
 
-				userId = userId.toJS()[0];
+				[userId] = userId.toJS();
 				const user = await dispatch(EchoJSActions.fetch(userId));
 
 				dispatch(GlobalReducer.actions.setValue({ fields: ['user'], value: user }));
@@ -52,7 +52,7 @@ class AuthActionsClass extends BaseActionsClass {
 				const isRegistred = await dispatch(ContractAction.isRegistred());
 
 				if (!isRegistred) {
-					await dispatch(ContractAction.registrInPlatform());
+					await dispatch(ContractAction.registrateInPlatform());
 				}
 
 				history.push(START_PATH);
@@ -66,8 +66,8 @@ class AuthActionsClass extends BaseActionsClass {
 		return async (dispatch, getState) => {
 
 			try {
-				const user = getState().global.getIn(['user']).toJS();
-				if (!user || !user.id) {
+				const userId = getState().global.getIn(['user', 'id']);
+				if (userId) {
 					dispatch(FormActions.setFormValue(MAIN_FORM, ['error'], 'User not found'));
 					return;
 				}

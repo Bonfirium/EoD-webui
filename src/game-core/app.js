@@ -5,7 +5,12 @@ import { gen_test } from '../../gen_test_data';
 
 require('babel-polyfill');
 
-export default async (userOwnId, usersIds, moveCb = ()=>{}, map = gen_test()) => {
+export default async (
+	userOwnId = '0xsadssdsds',
+	usersIds,
+	moveCb = () => {},
+	map = gen_test(),
+) => {
 
 	const pixiWidth = 992;
 	const pixiHeight = 544;
@@ -19,8 +24,8 @@ export default async (userOwnId, usersIds, moveCb = ()=>{}, map = gen_test()) =>
 
 	const game = new GameComponent(map);
 
-	const users = userOwnId || ['0xsadsadasdasds', '0xsadssdsds'];
-	const ownUser = userOwnId || '0xsadssdsds';
+	const users = usersIds || ['0xsadsadasdasds', userOwnId];
+	const ownUser = userOwnId;
 
 	game.initGame(users);
 	game.initUser(ownUser, moveCb);
