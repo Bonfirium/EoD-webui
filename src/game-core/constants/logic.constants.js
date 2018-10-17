@@ -5,8 +5,8 @@ export const MAP_VALUES = {
 };
 
 export const GAME_FIELD = {
-	WIDHT: 30,
-	HEIGHT: 16,
+	WIDHT: 11,
+	HEIGHT: 11,
 };
 
 export const MOVEABLE_SPEED = 50;

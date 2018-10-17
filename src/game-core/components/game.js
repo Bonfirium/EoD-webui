@@ -4,16 +4,18 @@ import Room from './room';
 import Portal from './portal';
 import Treasure from './treasure';
 import Door from './door';
-import { MAP_VALUES } from '../constants/logic.constants';
+import {MAP_VALUES} from '../constants/logic.constants';
 import generateRoomsCoordinates from '../utils/rooms.generator';
 import generateDoorCoordinates from '../utils/doors.generator';
-import { Images } from '../loaders/images';
+import {Images} from '../loaders/images';
 import Hero from './hero';
 import genRandomArray from '../utils/random';
+import mapProxy from '../utils/mapProxy';
+
 
 export default class GameComponent extends BaseComponent {
 
-	constructor(map) {
+	constructor(roomVector, treasuresVector, playears) {
 		super();
 		const background = new Background();
 		this.container.addChild(background.container);
@@ -37,10 +39,40 @@ export default class GameComponent extends BaseComponent {
 		this.isHeroMove = true;
 		this.ownUser = null;
 
+		// const roomVector = [ 11,
+		// 	33,
+		// 	77,
+		// 	56,
+		// 	100,
+		// 	13,
+		// 	35,
+		// 	79,
+		// 	58,
+		// 	113,
+		// 	4,
+		// 	37,
+		// 	81,
+		// 	60,
+		// 	28,
+		// 	83,
+		// 	105,
+		// 	7,
+		// 	51,
+		// 	30,
+		// 	85,
+		// 	107,
+		// 	64,
+		// 	21,
+		// 	43,
+		// 	87,
+		// 	109 ];
+		//
+		// const treasuresVector = [ 28, 7, 21, 13, 37 ];
+
+		const map = mapProxy(roomVector, treasuresVector);
+		console.log(map);
 		this._drawRooms(map);
 		this._drawDoors(map);
-
-		const k = false;
 
 	}
 
@@ -103,23 +135,23 @@ export default class GameComponent extends BaseComponent {
 		const roomsCoordinates = generateRoomsCoordinates(map);
 		for (let i = 0; i < roomsCoordinates.length; i++) {
 			const {
-				x, y, indexX, indexY, type,
+				x, y, indexX, indexY, type, vectorItem
 			} = roomsCoordinates[i];
 			let containerObject;
 
 			switch (type) {
 				case MAP_VALUES.ROOM: {
-					containerObject = new Room(x, y, indexX, indexY);
+					containerObject = new Room(x, y, indexX, indexY, vectorItem);
 					this.simpleRooms.push(containerObject);
 					break;
 				}
 				case MAP_VALUES.PORTAL: {
-					containerObject = new Portal(x, y, indexX, indexY);
+					containerObject = new Portal(x, y, indexX, indexY, vectorItem);
 					this.portals.push(containerObject);
 					break;
 				}
 				case MAP_VALUES.TREASURE: {
-					containerObject = new Treasure(x, y, indexX, indexY);
+					containerObject = new Treasure(x, y, indexX, indexY, vectorItem);
 					break;
 				}
 			}

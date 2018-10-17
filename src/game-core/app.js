@@ -11,7 +11,7 @@ export default async (
 	treasures = [],
 	moveCb = () => {},
 	closeCb = () => {},
-	map = gen_test(),
+	vector = gen_test(),
 ) => {
 
 	const pixiWidth = 992;
@@ -24,7 +24,7 @@ export default async (
 
 	await loadResources();
 
-	const game = new GameComponent(map);
+	const game = new GameComponent(vector, treasures);
 
 	const users = usersIds || ['0xsadsadasdasds', userOwnId];
 	const ownUser = userOwnId;

@@ -1,6 +1,7 @@
-import { ROOM } from '../constants/images.constants';
-import { MAP_VALUES, GAME_FIELD } from '../constants/logic.constants';
-import { D12_X, D12_Y } from '../../../gen_test_data';
+import {ROOM} from '../constants/images.constants';
+import {MAP_VALUES, GAME_FIELD} from '../constants/logic.constants';
+import {D12_X, D12_Y} from '../../../gen_test_data';
+import {doublepointToVector} from '../utils/compressor';
 
 /**
  *
@@ -25,6 +26,7 @@ const _getNeighbors = (map, x, y) => {
 			continue;
 		}
 
+		console.log(newX, newY);
 		const potentialNeighbor = map[newX][newY];
 
 		if (potentialNeighbor === MAP_VALUES.ROOM || potentialNeighbor === MAP_VALUES.PORTAL || potentialNeighbor === MAP_VALUES.TREASURE) {
@@ -62,6 +64,7 @@ export default (map) => {
 					indexY: y,
 					type: objectType,
 					neighbors: _getNeighbors(map, x, y),
+					vectorItem: doublepointToVector(x, y)
 				});
 			}
 		}

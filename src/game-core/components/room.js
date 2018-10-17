@@ -7,7 +7,7 @@ import { MAP_VALUES } from '../constants/logic.constants';
 /** @typedef {Class} Room */
 export default class Room extends ObjectComponent {
 
-	constructor(x, y, indexX, indexY, mapType = MAP_VALUES.ROOM) {
+	constructor(x, y, indexX, indexY, vectorItem, mapType = MAP_VALUES.ROOM) {
 		super(Images.room, {
 			x,
 			y,

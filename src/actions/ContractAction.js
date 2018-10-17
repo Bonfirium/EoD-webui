@@ -1,5 +1,5 @@
 // import { EchoJSActions } from 'echojs-redux';
-import { PrivateKey, TransactionBuilder } from 'echojs-lib';
+import {PrivateKey, TransactionBuilder} from 'echojs-lib';
 
 import GlobalReducer from '../reducers/GlobalReducer';
 
@@ -16,11 +16,11 @@ import {
 	MOVE,
 } from '../constants/ContractCodeConstants';
 
-import { START_PATH, GAME_PATH } from '../constants/GlobalConstants';
+import {START_PATH, GAME_PATH} from '../constants/GlobalConstants';
 
 const zero64String = '0000000000000000000000000000000000000000000000000000000000000000';
 
-const receiver = '1.16.16730';
+const receiver = '1.16.16731';
 
 const WIDTH = 11;
 const PLAYERS_COUNT = 2;
@@ -34,6 +34,13 @@ class ContractActionsClass extends BaseActionsClass {
 	 */
 	constructor() {
 		super(GlobalReducer);
+
+		// history.push(GAME_PATH);
+
+		// setTimeout(async () => {
+		// 	(await gameInitialize('hhh', undefined, []));
+		// }, 1000);
+
 	}
 
 	getData() {
@@ -61,7 +68,7 @@ class ContractActionsClass extends BaseActionsClass {
 				dispatch(GlobalActions.setValue(['inSearch'], false));
 				dispatch(GlobalActions.setValue(['inGame'], true));
 
-				// await dispatch(this.createGame(players, treasures, map));
+				await dispatch(this.createGame(players, treasures, map));
 				return;
 			}
 
@@ -82,7 +89,9 @@ class ContractActionsClass extends BaseActionsClass {
 			history.push(GAME_PATH);
 
 			const game = await new Promise((res) => {
-				setTimeout(async () => { res(await gameInitialize(userId, undefined, treasures, moveCb, closeCb)); }, 1000);
+				setTimeout(async () => {
+					res(await gameInitialize(userId, usersIds, treasures, moveCb, closeCb, map));
+				}, 1000);
 			});
 
 			return game;
@@ -242,7 +251,7 @@ class ContractActionsClass extends BaseActionsClass {
 		return async (dispatch, getState) => {
 			const gameId = getState().global.get('gameId');
 
-            if (gameId === null) return null;
+			if (gameId === null) return null;
 			const code = `${GET_GAME_STATE}${this.to64HexString(gameId, 'int')}`;
 
 			const queryResult = await dispatch(this.callConstant(code));
