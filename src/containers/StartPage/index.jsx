@@ -12,7 +12,7 @@ class StartPage extends Component {
 	}
 
 	render() {
-		let { user } = this.props;
+		let { user, inSearch, gameId } = this.props;
 		if (user && Object.keys(user).length > 0) {
 			user = user.toJS();
 		}
@@ -23,6 +23,15 @@ class StartPage extends Component {
 					<Menu stackable className="header-wrap">
 						<Menu.Item className="semi-wide" as="div">
 							{(user && user.name) || ''}
+						</Menu.Item>
+						<Menu.Item className="semi-wide" as="div">
+							Wins: 10
+						</Menu.Item>
+						<Menu.Item className="semi-wide">
+							Defeats: 3
+						</Menu.Item>
+						<Menu.Item className="semi-wide" position="right">
+							{`Last game: ${gameId || 0}`}
 						</Menu.Item>
 					</Menu>
 				</div>
@@ -35,7 +44,7 @@ class StartPage extends Component {
 						</h1>
 
 						<div className="button-wrapper ta-center">
-							<Button className="button-wrapper Big submit-button" onClick={() => this.props.startGame()} primary content="Start game" />
+							<Button disabled={inSearch} className={inSearch ? "loading button-wrapper Big submit-button" : 'button-wrapper Big submit-button'} onClick={() => this.props.startGame()} primary content="Start game" />
 						</div>
 						<div className="button-wrapper ta-center">
 							<Button className="button-wrapper Big submit-button" onClick={() => this.props.getNextGameId()} primary content="getNextGameId" />
@@ -57,6 +66,8 @@ class StartPage extends Component {
 
 StartPage.propTypes = {
 	user: PropTypes.object,
+	inSearch: PropTypes.bool,
+	gameId: PropTypes.number,
 	checkAccountInfo: PropTypes.func,
 	startGame: PropTypes.func,
 	getNextGameId: PropTypes.func.isRequired,
@@ -66,6 +77,8 @@ StartPage.propTypes = {
 
 StartPage.defaultProps = {
 	user: {},
+	inSearch: false,
+	gameId: 0,
 	checkAccountInfo: () => {},
 	startGame: () => {},
 };
@@ -73,6 +86,8 @@ StartPage.defaultProps = {
 export default connect(
 	(state) => ({
 		user: state.global.getIn(['user']),
+		inSearch: state.global.getIn(['inSearch']),
+		gameId: state.global.getIn(['gameId']),
 	}),
 	(dispatch) => ({
 		checkAccountInfo: () => dispatch(AuthAction.checkAccountInfo()),

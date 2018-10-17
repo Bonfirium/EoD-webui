@@ -10,6 +10,7 @@ const DEFAULT_FIELDS = Map({
 	node_address: '',
 	gameId: null,
 	state: null,
+	loadingStart: false,
 	inSearch: false,
 	inGame: false,
 });

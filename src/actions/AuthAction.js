@@ -11,6 +11,7 @@ import history from '../history';
 
 import { MAIN_FORM } from '../constants/FormConstants';
 import { START_PATH, MAIN_PATH } from '../constants/GlobalConstants';
+import GlobalActions from "./GlobalActions";
 
 class AuthActionsClass extends BaseActionsClass {
 

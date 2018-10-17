@@ -20,7 +20,7 @@ import {START_PATH, GAME_PATH} from '../constants/GlobalConstants';
 
 const zero64String = '0000000000000000000000000000000000000000000000000000000000000000';
 
-const receiver = '1.16.16731';
+const receiver = '1.16.16732';
 
 const WIDTH = 11;
 const PLAYERS_COUNT = 2;
@@ -173,6 +173,7 @@ class ContractActionsClass extends BaseActionsClass {
 
 	findGame() {
 		return async (dispatch) => {
+			dispatch(GlobalActions.setValue(['inSearch'], true));
 
 			try {
 				const res = await dispatch(this.callContract(FIND_GAME)); // int next_game_id
@@ -182,11 +183,13 @@ class ContractActionsClass extends BaseActionsClass {
 
 				if (result.exec_res.output.length <= 64) {
 					dispatch(GlobalActions.setValue(['gameId'], parseInt(result.exec_res.output, 16)));
-					dispatch(GlobalActions.setValue(['inSearch'], true));
+				} else {
+					dispatch(GlobalActions.setValue(['inSearch'], false));
 				}
 
 				// console.log(result);
 			} catch (e) {
+				dispatch(GlobalActions.setValue(['inSearch'], false));
 				console.log(e);
 			}
 		};
