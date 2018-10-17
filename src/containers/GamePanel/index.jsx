@@ -1,5 +1,8 @@
 import React from 'react';
-import { Menu } from 'semantic-ui-react';
+import { Menu, Icon } from 'semantic-ui-react';
+import Hero from '../../assets/images/game/hero_01_true.png'
+import Ogr from '../../assets/images/game/ogr_01_true.png'
+import Chest from '../../assets/images/game/chest_128.png'
 
 class GamePanel extends React.Component {
 
@@ -10,13 +13,16 @@ class GamePanel extends React.Component {
 				<div className="header-center-wrap">
 					<Menu stackable className="header-wrap">
 						<Menu.Item className="semi-wide" as="div">
-							123
+							<img src={Hero} />
+							4
 						</Menu.Item>
 						<Menu.Item className="semi-wide" as="div">
-							Wins: 10
+							<img src={Ogr} />
+							4
 						</Menu.Item>
 						<Menu.Item className="semi-wide">
-							Defeats: 3
+							<img src={Chest} />
+							11
 						</Menu.Item>
 						<Menu.Item className="semi-wide" position="right">
 							0
