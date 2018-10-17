@@ -8,6 +8,10 @@ const DEFAULT_FIELDS = Map({
 	publicKey: null,
 	user: {},
 	node_address: '',
+	gameId: null,
+	state: null,
+	inSearch: false,
+	inGame: false,
 });
 
 export default createModule({

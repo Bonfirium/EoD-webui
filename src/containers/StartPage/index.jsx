@@ -3,15 +3,15 @@ import PropTypes from 'prop-types';
 import { Button, Menu } from 'semantic-ui-react';
 import connect from 'react-redux/es/connect/connect';
 import AuthAction from '../../actions/AuthAction';
+import ContractAction from '../../actions/ContractAction';
 
 class StartPage extends Component {
 
 	componentDidMount() {
-		this.props.getAccountInfo();
+		this.props.checkAccountInfo();
 	}
 
 	render() {
-		const { balance } = this.props;
 		let { user } = this.props;
 		if (user && Object.keys(user).length > 0) {
 			user = user.toJS();
@@ -23,9 +23,6 @@ class StartPage extends Component {
 					<Menu stackable className="header-wrap">
 						<Menu.Item className="semi-wide" as="div">
 							{(user && user.name) || ''}
-						</Menu.Item>
-						<Menu.Item className="semi-wide" position="right">
-							{`Tokens: ${balance || 0}`}
 						</Menu.Item>
 					</Menu>
 				</div>
@@ -40,6 +37,15 @@ class StartPage extends Component {
 						<div className="button-wrapper ta-center">
 							<Button className="button-wrapper Big submit-button" onClick={() => this.props.startGame()} primary content="Start game" />
 						</div>
+						<div className="button-wrapper ta-center">
+							<Button className="button-wrapper Big submit-button" onClick={() => this.props.getNextGameId()} primary content="getNextGameId" />
+						</div>
+						<div className="button-wrapper ta-center">
+							<Button className="button-wrapper Big submit-button" onClick={() => this.props.getDungeon()} primary content="getDungeon" />
+						</div>
+						<div className="button-wrapper ta-center">
+							<Button className="button-wrapper Big submit-button" onClick={() => this.props.getGameState()} primary content="getGameState" />
+						</div>
 					</div>
 
 				</div>
@@ -51,25 +57,28 @@ class StartPage extends Component {
 
 StartPage.propTypes = {
 	user: PropTypes.object,
-	balance: PropTypes.number,
-	getAccountInfo: PropTypes.func,
+	checkAccountInfo: PropTypes.func,
 	startGame: PropTypes.func,
+	getNextGameId: PropTypes.func.isRequired,
+	getDungeon: PropTypes.func.isRequired,
+	getGameState: PropTypes.func.isRequired,
 };
 
 StartPage.defaultProps = {
 	user: {},
-	balance: 0,
-	getAccountInfo: () => {},
+	checkAccountInfo: () => {},
 	startGame: () => {},
 };
 
 export default connect(
 	(state) => ({
 		user: state.global.getIn(['user']),
-		balance: state.global.getIn(['balance']),
 	}),
 	(dispatch) => ({
-		getAccountInfo: () => dispatch(AuthAction.getAccountInfo()),
+		checkAccountInfo: () => dispatch(AuthAction.checkAccountInfo()),
 		startGame: () => dispatch(AuthAction.startGame()),
+		getNextGameId: () => dispatch(ContractAction.getNextGameId()),
+		getDungeon: () => dispatch(ContractAction.getStaticData()),
+		getGameState: () => dispatch(ContractAction.getGameState()),
 	}),
 )(StartPage);

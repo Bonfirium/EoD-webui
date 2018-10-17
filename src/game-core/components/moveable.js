@@ -16,7 +16,7 @@ export default class Moveable extends ObjectComponent {
 		super(texture, {
 			...room ? { visible: false } : {
 				x,
-				y
+				y,
 			},
 			width: MOVEABLE.WIDTH,
 			height: MOVEABLE.HEIGHT,
@@ -55,8 +55,8 @@ export default class Moveable extends ObjectComponent {
 		// todo rafactor this shit
 		const start = this.getSpiteCoords();
 		const dest = room.getSpiteCoords();
-		dest.x = dest.x + ROOM.WIDTH / 2;
-		dest.y = dest.y + ROOM.HEIGHT / 2;
+		dest.x += ROOM.WIDTH / 2;
+		dest.y += ROOM.HEIGHT / 2;
 		const frames = 30;
 		const xDistance = dest.x - start.x;
 		const xStep = xDistance / frames;
@@ -67,8 +67,8 @@ export default class Moveable extends ObjectComponent {
 		let interval;
 		const tick = () => {
 			const cur = this.getSpiteCoords();
-			let x = cur.x + xStep;
-			let y = cur.y + yStep;
+			const x = cur.x + xStep;
+			const y = cur.y + yStep;
 			// if (x > dest.x) x = dest.x;
 			// if (y > dest.y) y = dest.y;
 

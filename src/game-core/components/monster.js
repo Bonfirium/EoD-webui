@@ -9,12 +9,14 @@ export default class Monster extends Moveable {
 	 * @param {Number?} y
 	 * @param {Room?} room
 	 */
-	constructor(texture, { x, y, room, id }) {
+	constructor(texture, {
+		x, y, room, id,
+	}) {
 
 		super(texture, {
 			x,
 			y,
-			room
+			room,
 		});
 
 		this.isHero = false;
@@ -30,4 +32,5 @@ export default class Monster extends Moveable {
 	getScores() {
 		return this._treasureCount;
 	}
+
 }

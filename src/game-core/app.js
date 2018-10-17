@@ -8,7 +8,9 @@ require('babel-polyfill');
 export default async (
 	userOwnId = '0xsadssdsds',
 	usersIds,
+	treasures = [],
 	moveCb = () => {},
+	closeCb = () => {},
 	map = gen_test(),
 ) => {
 

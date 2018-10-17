@@ -13,7 +13,7 @@ export default class Room extends ObjectComponent {
 			y,
 			height: ROOM.HEIGHT,
 			width: ROOM.WIDTH,
-			mapType
+			mapType,
 		});
 
 		this.indexX = indexX;
@@ -48,8 +48,6 @@ export default class Room extends ObjectComponent {
 	onClick(cb) {
 		this._sprite.on('pointerdown', cb);
 	}
-
-
 
 
 }

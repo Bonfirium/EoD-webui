@@ -10,16 +10,21 @@ import GlobalActions from './GlobalActions';
 
 import {
 	FIND_GAME,
-	GET_MAP,
-	GET_BALANCE,
-	REGISTRATE,
-	IN_POOL,
-	GET_GAME_STATUS,
+	GET_GAME_STATE,
+	GET_STATIC_DATA,
+	GET_NEXT_GAME_ID,
 	MOVE,
 } from '../constants/ContractCodeConstants';
 
+import { START_PATH, GAME_PATH } from '../constants/GlobalConstants';
+
 const zero64String = '0000000000000000000000000000000000000000000000000000000000000000';
-const receiver = '1.16.16355';
+
+const receiver = '1.16.16730';
+
+const WIDTH = 11;
+const PLAYERS_COUNT = 2;
+const TREASURES_COUNT = 5;
 
 
 class ContractActionsClass extends BaseActionsClass {
@@ -34,45 +39,61 @@ class ContractActionsClass extends BaseActionsClass {
 	getData() {
 		return async (dispatch, getState) => {
 			const state = getState();
-			const user = state.global.getIn(['user']);
-			if (Object.keys(user).length > 0 && user.toJS().id) {
-				const inPoolRes = await dispatch(this.inPool());
-				// const userLastGameId = await dispatch(this.userLastGameId());
-				// const nextGameId = await dispatch(this.nextGameId());
-				if (inPoolRes) {
-					dispatch(GlobalActions.setValue(['isWait'], true));
-					console.log('Wait');
-					const game = await dispatch(this.getGame());
-					console.log(game);
-					const map = await dispatch(this.getMap(1));
-					console.log(map);
-				}
+			const userId = state.global.getIn(['user', 'id']);
+			if (!userId) return;
 
-				if (!inPoolRes && state.global.get('gameId')) {
-					dispatch(GlobalActions.setValue(['isWait'], false));
-					console.log('Run motherfuka');
-					GlobalActions.setValue(['gameId'], null);
-					await dispatch(this.createGame());
-				}
+			const inSearch = state.global.get('inSearch');
+			const inGame = state.global.get('inGame');
+			const gameId = state.global.get('gameId');
+			const nexGameId = await dispatch(this.getNextGameId());
 
+			if (nexGameId === gameId) {
+				dispatch(GlobalActions.setValue(['inSearch'], true));
+				return;
 			}
+
+			if (inSearch && (nexGameId > gameId)) {
+
+				const {
+					positions: map, players, treasures, addresses,
+				} = await dispatch(this.getStaticData(gameId));
+
+				dispatch(GlobalActions.setValue(['inSearch'], false));
+				dispatch(GlobalActions.setValue(['inGame'], true));
+
+				// await dispatch(this.createGame(players, treasures, map));
+				return;
+			}
+
+			if (inGame) {
+				const { status, players, treasures } = await dispatch(this.getGameState());
+			}
+
 		};
 	}
 
-	createGame(usersIds, map) {
+	createGame(usersIds, treasures, map) {
 		return async (dispatch, getState) => {
 			const userId = getState().global.getIn(['user', 'id']);
 
 			const moveCb = (x, y) => dispatch(this.makeMove(x, y));
+			const closeCb = () => dispatch(this.finishGame());
 
-			history.push('/game');
+			history.push(GAME_PATH);
 
 			const game = await new Promise((res) => {
-				setTimeout(async () => { res(await gameInitialize(userId, usersIds, moveCb, map)); }, 1000);
+				setTimeout(async () => { res(await gameInitialize(userId, undefined, treasures, moveCb, closeCb)); }, 1000);
 			});
 
-
+			return game;
 		};
+	}
+
+	getConstant(instance, account, code) {
+		return instance.dbApi().exec(
+			'call_contract_no_changing_state',
+			[receiver, account, '1.3.0', code],
+		);
 	}
 
 	async buildAndSendTransaction(operation, options, privateKey) {
@@ -89,9 +110,7 @@ class ContractActionsClass extends BaseActionsClass {
 
 	callContract(code) {
 		return async (dispatch, getState) => {
-			const user = getState().global.get('user').toJS();
-
-			const { id: registrar } = user;
+			const registrar = getState().global.getIn(['user', 'id']);
 
 			if (!registrar) {
 				return;
@@ -117,43 +136,12 @@ class ContractActionsClass extends BaseActionsClass {
 		};
 	}
 
-	registrateInPlatform() {
-		return async (dispatch) => {
-
-			try {
-				await dispatch(this.callContract(REGISTRATE));
-			} catch (e) {
-				console.log(e);
-			}
-		};
-	}
-
-	findGame() {
-		return async (dispatch, getState) => {
-
-			try {
-				const res = await dispatch(this.callContract(FIND_GAME));
-
-				const resultId = res[0].trx.operation_results[0][1];
-				const instance = getState().echojs.getIn(['system', 'instance']);
-				const result = await instance.dbApi().exec('get_contract_result', [resultId]);
-				if (result.exec_res.output.length <= 64) {
-					GlobalActions.setValue(['gameId'], parseInt(result.exec_res.output, 16));
-				}
-
-				console.log(result);
-			} catch (e) {
-				console.log(e);
-			}
-		};
-	}
-
 	callConstant(code) {
 		return async (dispatch, getState) => {
 			const instance = getState().echojs.getIn(['system', 'instance']);
-			const user = getState().global.get('user').toJS();
+			const id = getState().global.getIn(['user', 'id']);
 
-			const { id } = user;
+			if (!id) return null;
 
 			const queryResult = await this.getConstant(instance, id, code);
 
@@ -161,89 +149,125 @@ class ContractActionsClass extends BaseActionsClass {
 		};
 	}
 
-	getConstant(instance, account, code) {
-		return instance.dbApi().exec(
-			'call_contract_no_changing_state',
-			[receiver, account, '1.3.0', code],
-		);
-	}
-
-
-	getMap(lobbyId) {
-		return async (dispatch) => {
-
-			const code = `${GET_MAP}${this.to64HexString(lobbyId, 'int')}`;
-
-			const queryResult = await dispatch(this.callConstant(code));
-			return queryResult;
-			// console.log(queryResult)
-			// let end = 64;
-			// const array = [];
-			// while(end != queryResult.length + 64) {
-			//     array.push(parseInt(queryResult.slice(end - 64, end), 16));
-			//     end += 64;
-			// };
-
-			// const newArr = [];
-			// while(array.length) newArr.push(array.splice(0, 16));
-		};
-	}
-
-	getBalance() {
-		return async (dispatch) => {
-
-			const queryResult = await dispatch(this.callConstant(GET_BALANCE));
-			return parseInt(queryResult, 16);
-		};
-	}
-
-	isRegistred() {
-		return async (dispatch) => {
-
-			// TODO remove when new contract
-			const code = '777e2a1b'; // is_registred()
-
-			const queryResult = await dispatch(this.callConstant(code));
-			return Boolean(parseInt(queryResult, 16));
-		};
-	}
-
-	inPool() {
+	getResult(resultId) {
 		return async (dispatch, getState) => {
-			const state = getState();
-			const userId = state.global.getIn(['user', 'id']);
-			const address = this.to64HexString(userId, 'address');
 
-			const queryResult = await dispatch(this.callConstant(`${IN_POOL}${address}`));
-			return parseInt(queryResult, 16);
+			try {
+				const instance = getState().echojs.getIn(['system', 'instance']);
+				const result = await instance.dbApi().exec('get_contract_result', [resultId]);
+				return result;
+			} catch (e) {
+				console.log(e);
+			}
 		};
 	}
 
-	getGame() {
-		return async (dispatch, getState) => {
-			const state = getState();
-			const gameId = state.global.get('gameId');
+	findGame() {
+		return async (dispatch) => {
 
-			const code = `${GET_GAME_STATUS}${this.to64HexString(gameId, 'int')}`;
+			try {
+				const res = await dispatch(this.callContract(FIND_GAME)); // int next_game_id
 
-			const queryResult = await dispatch(this.callConstant(code));
-			return queryResult;
+				const resultId = res[0].trx.operation_results[0][1];
+				const result = await dispatch(this.getResult(resultId));
+
+				if (result.exec_res.output.length <= 64) {
+					dispatch(GlobalActions.setValue(['gameId'], parseInt(result.exec_res.output, 16)));
+					dispatch(GlobalActions.setValue(['inSearch'], true));
+				}
+
+				// console.log(result);
+			} catch (e) {
+				console.log(e);
+			}
 		};
 	}
 
 	makeMove(x, y) {
 		return async (dispatch, getState) => {
 			const state = getState();
-			let gameId = state.global.get('gameId') || 1;
+			let gameId = state.global.get('gameId');
+
+			if (!gameId) return;
 
 			gameId = this.to64HexString(gameId, 'int');
-			x = this.to64HexString(x, 'int');
-			y = this.to64HexString(y, 'int');
+			const point = this.to64HexString((x + (y * WIDTH)), 'int');
 
-			// todo refactor when method ll be ready
-			const code = `${MOVE}${gameId}${x}${y}`; // make move ???
+			const code = `${MOVE}${gameId}${point}`;
+			// dispatch(this.callContant(code));
+		};
+	}
 
-			// return dispatch(this.callContant(code));
+	getNextGameId() {
+		return async (dispatch) => {
+
+			const queryResult = await dispatch(this.callConstant(GET_NEXT_GAME_ID));
+
+			return parseInt(queryResult, 16); // int next_game_id
+		};
+	}
+
+	getStaticData(gameId) {
+		return async (dispatch) => {
+
+			if (gameId === null) return null;
+
+			const code = `${GET_STATIC_DATA}${this.to64HexString(gameId, 'int')}`;
+
+			const queryResult = await dispatch(this.callConstant(code));
+
+
+			const arr = [];
+			for (let i = 0; i < queryResult.length; i += 64) {
+				arr.push(parseInt(queryResult.slice(i, i + 64), 16));
+			}
+			arr.shift();
+
+			const players = new Array(PLAYERS_COUNT / 2).fill(0).concat(arr.splice(0, PLAYERS_COUNT / 2));
+
+			const treasures = arr.splice(0, TREASURES_COUNT);
+
+			const addresses = arr.splice(0, PLAYERS_COUNT);
+
+			arr.shift();
+			const positions = arr;
+
+			return {
+				positions, players, treasures, addresses,
+			};
+		};
+	}
+
+	getGameState() {
+		return async (dispatch, getState) => {
+			const gameId = getState().global.get('gameId');
+
+            if (gameId === null) return null;
+			const code = `${GET_GAME_STATE}${this.to64HexString(gameId, 'int')}`;
+
+			const queryResult = await dispatch(this.callConstant(code));
+
+			if (!queryResult) return '';
+
+
+			const arr = [];
+			for (let i = 0; i < queryResult.length; i += 64) {
+				arr.push(parseInt(queryResult.slice(i, i + 64), 16));
+			}
+			const status = arr.shift();
+
+			const players = arr.splice(0, PLAYERS_COUNT);
+
+			const treasures = arr;
+
+			return { status, players, treasures };
+		};
+	}
+
+	finishGame() {
+		return async (dispatch) => {
+			dispatch(GlobalActions.setValue(['inGame'], false));
+			history.push(START_PATH);
 		};
 	}
 

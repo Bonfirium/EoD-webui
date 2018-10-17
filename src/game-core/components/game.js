@@ -40,7 +40,7 @@ export default class GameComponent extends BaseComponent {
 		this._drawRooms(map);
 		this._drawDoors(map);
 
-		let k = false;
+		const k = false;
 
 	}
 

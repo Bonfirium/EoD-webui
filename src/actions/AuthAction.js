@@ -10,8 +10,7 @@ import ContractAction from './ContractAction';
 import history from '../history';
 
 import { MAIN_FORM } from '../constants/FormConstants';
-import { START_PATH } from '../constants/GlobalConstants';
-import GlobalActions from './GlobalActions';
+import { START_PATH, MAIN_PATH } from '../constants/GlobalConstants';
 
 class AuthActionsClass extends BaseActionsClass {
 
@@ -48,13 +47,6 @@ class AuthActionsClass extends BaseActionsClass {
 				dispatch(GlobalReducer.actions.setValue({ fields: ['privateKey'], value: privateKey }));
 				dispatch(GlobalReducer.actions.setValue({ fields: ['publicKey'], value: publicKey }));
 
-
-				const isRegistred = await dispatch(ContractAction.isRegistred());
-
-				if (!isRegistred) {
-					await dispatch(ContractAction.registrateInPlatform());
-				}
-
 				history.push(START_PATH);
 			} catch (e) {
 				dispatch(FormActions.setFormValue(MAIN_FORM, ['error'], 'wrong key or login error'));
@@ -62,17 +54,14 @@ class AuthActionsClass extends BaseActionsClass {
 		};
 	}
 
-	getAccountInfo() {
+	checkAccountInfo() {
 		return async (dispatch, getState) => {
 
 			try {
 				const userId = getState().global.getIn(['user', 'id']);
-				if (userId) {
-					dispatch(FormActions.setFormValue(MAIN_FORM, ['error'], 'User not found'));
-					return;
+				if (!userId) {
+					history.push(MAIN_PATH);
 				}
-				const balance = await dispatch(ContractAction.getBalance());
-				dispatch(GlobalActions.setValue('balance', balance));
 			} catch (e) {
 				dispatch(FormActions.setFormValue(MAIN_FORM, ['error'], 'wrong key or login error'));
 			}
@@ -83,8 +72,6 @@ class AuthActionsClass extends BaseActionsClass {
 		return async (dispatch) => {
 
 			await dispatch(ContractAction.findGame());
-
-
 		};
 	}
 

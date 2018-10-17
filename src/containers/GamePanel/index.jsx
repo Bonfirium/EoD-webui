@@ -6,7 +6,7 @@ class GamePanel extends React.Component {
 
 		return (
 			<div className="main_body text-gray">
-				<div id='game-container' ></div>
+				<div id="game-container" />
 			</div>
 		);
 	}

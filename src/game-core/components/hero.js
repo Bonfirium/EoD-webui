@@ -9,12 +9,14 @@ export default class Hero extends Moveable {
 	 * @param {Number?} y
 	 * @param {Room?} room
 	 */
-	constructor(texture, { x, y, room, id }) {
+	constructor(texture, {
+		x, y, room, id,
+	}) {
 
 		super(texture, {
 			x,
 			y,
-			room
+			room,
 		});
 
 		this.isHero = true;
@@ -32,10 +34,11 @@ export default class Hero extends Moveable {
 		return this._treasureCount;
 	}
 
-	kill(){
+	kill() {
 		this.isAlive = false;
 		setTimeout(() => {
 			this._sprite.visible = false;
 		}, 1000);
 	}
+
 }

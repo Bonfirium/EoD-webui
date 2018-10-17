@@ -1,5 +1,5 @@
 export default (length) => {
-	var j,
+	let j,
 		x,
 		i;
 	const a = new Array(length).fill(0)
@@ -12,4 +12,4 @@ export default (length) => {
 		a[j] = x;
 	}
 	return a;
-}
+};
