@@ -7,7 +7,7 @@ import Door from './door';
 import { MAP_VALUES, TEAMS } from '../constants/logic.constants';
 import generateRoomsCoordinates from '../utils/rooms.generator';
 import generateDoorCoordinates from '../utils/doors.generator';
-import {Images} from '../loaders/images';
+import { Images } from '../loaders/images';
 import Hero from './hero';
 import genRandomArray from '../utils/random';
 import mapProxy from '../utils/mapProxy';
@@ -49,43 +49,39 @@ export default class GameComponent extends BaseComponent {
 
 	update({ status, players, treasures }) {
 		console.log('STATUS', status);
-		// console.log('players', players);
-		// console.log('rooms', this.rooms.map((one) => one.id));
+
 		this.setSideMove(this.userTeam === status);
 		[...this.monsters, ...this.heroes].forEach((one, index) => {
-			// console.log('iteration', players[index]);
+
 			const room = this.rooms.find(({ id }) => id === players[index]);
 			one.moveToRoom(room || this.rooms[0], true);
 		});
 	}
 
 	initGame(users) {
-
 		for (let i = 0; i < users.length / 2; i++) {
-			const hero = new Hero(Images[`hero${i + 1}`], {
-				room: this.rooms.find(({ id }) => id === users[i]) || this.rooms[0],
-				id: i,
-			});
-
-			this.heroes.push(hero);
-			this.container.addChild(hero.container);
-		}
-
-		for (let i = users.length / 2; i < users.length; i++) {
 			const hero = new Hero(Images[`monster${i + 1 - users.length / 2}`], {
 				room: this.rooms.find(({ id }) => id === users[i]),
 				id: i,
 			});
-
 			this.monsters.push(hero);
 			this.container.addChild(hero.container);
 		}
 
+		for (let i = users.length / 2; i < users.length; i++) {
+
+			const hero = new Hero(Images[`hero${i + 1}`], {
+				room: this.rooms.find(({ id }) => id === users[i]) || this.rooms[0],
+				id: i,
+			});
+			this.heroes.push(hero);
+			this.container.addChild(hero.container);
+
+		}
 
 	}
 
 	initUser(userIndex, cb) {
-		console.log('userIndex', userIndex);
 		this.rooms.forEach((room) => {
 
 			room.onClick(() => {
@@ -93,7 +89,6 @@ export default class GameComponent extends BaseComponent {
 					this.isAlreadyMoved = true;
 					this.isFirstMove = false;
 					cb(room.id);
-					// this._moveToRoom(userIndex, room.id);
 				}
 			});
 
@@ -114,7 +109,7 @@ export default class GameComponent extends BaseComponent {
 		const roomsCoordinates = generateRoomsCoordinates(map);
 		for (let i = 0; i < roomsCoordinates.length; i++) {
 			const {
-				x, y, indexX, indexY, type, vectorItem
+				x, y, indexX, indexY, type, vectorItem,
 			} = roomsCoordinates[i];
 			let containerObject;
 
@@ -206,12 +201,8 @@ export default class GameComponent extends BaseComponent {
 		const hero = this.heroes.find((user) => user.id === userId);
 		const monster = this.monsters.find((user) => user.id === userId);
 
-		console.log('room', room);
-		console.log('hero', hero);
-		console.log('monster', monster);
-
 		if (room && hero) {
-			console.log(111111);
+
 			hero.moveToRoom(room);
 
 			if (room.mapType === MAP_VALUES.TREASURE) {
@@ -221,7 +212,7 @@ export default class GameComponent extends BaseComponent {
 		}
 
 		if (room && monster) {
-			console.log(222222);
+
 			monster.moveToRoom(room);
 
 			this.heroes.forEach((heroItem) => {

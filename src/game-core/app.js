@@ -7,7 +7,7 @@ require('babel-polyfill');
 
 export default async (
 	userOwnId = '0xsadssdsds',
-	usersCoords,
+	usersPositions,
 	userIds,
 	treasures = [],
 	moveCb = () => {},
@@ -29,7 +29,7 @@ export default async (
 	const userIndex = userIds.findIndex((id) => id === userOwnId);
 	const game = new GameComponent(vector, treasures, userIndex);
 
-	game.initGame(usersCoords);
+	game.initGame(usersPositions);
 	game.initUser(userIndex, moveCb);
 
 	app.stage.addChild(game.container);

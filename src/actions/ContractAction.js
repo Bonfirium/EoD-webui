@@ -20,7 +20,7 @@ import {START_PATH, GAME_PATH} from '../constants/GlobalConstants';
 
 const zero64String = '0000000000000000000000000000000000000000000000000000000000000000';
 
-const receiver = '1.16.16732';
+const receiver = '1.16.16743';
 
 const WIDTH = 11;
 const PLAYERS_COUNT = 2;
@@ -35,13 +35,6 @@ class ContractActionsClass extends BaseActionsClass {
 	 */
 	constructor() {
 		super(GlobalReducer);
-
-		// history.push(GAME_PATH);
-
-		// setTimeout(async () => {
-		// 	(await gameInitialize('hhh', undefined, []));
-		// }, 1000);
-
 	}
 
 	getData() {
@@ -81,7 +74,7 @@ class ContractActionsClass extends BaseActionsClass {
 		};
 	}
 
-	createGame(usersCoords, userIds, treasures, map) {
+	createGame(usersPositions, userIds, treasures, map) {
 		return async (dispatch, getState) => {
 			const userId = getState().global.getIn(['user', 'id']);
 
@@ -92,7 +85,7 @@ class ContractActionsClass extends BaseActionsClass {
 
 			Game = await new Promise((res) => {
 				setTimeout(async () => {
-					res(await gameInitialize(userId, usersCoords, userIds, treasures, moveCb, closeCb, map));
+					res(await gameInitialize(userId, usersPositions, userIds, treasures, moveCb, closeCb, map));
 				}, 1000);
 			});
 
@@ -188,7 +181,6 @@ class ContractActionsClass extends BaseActionsClass {
 					dispatch(GlobalActions.setValue(['inSearch'], false));
 				}
 
-				// console.log(result);
 			} catch (e) {
 				dispatch(GlobalActions.setValue(['inSearch'], false));
 				console.log(e);
@@ -207,7 +199,7 @@ class ContractActionsClass extends BaseActionsClass {
 			const point = this.to64HexString(id, 'int');
 
 			const code = `${MOVE}${gameId}${point}`;
-			dispatch(this.callContract(code));
+			await dispatch(this.callContract(code));
 		};
 	}
 
@@ -236,7 +228,7 @@ class ContractActionsClass extends BaseActionsClass {
 			}
 			arr.shift();
 
-			const players = new Array(PLAYERS_COUNT / 2).fill(0).concat(arr.splice(0, PLAYERS_COUNT / 2));
+			const players =arr.splice(0, PLAYERS_COUNT / 2).concat( new Array(PLAYERS_COUNT / 2).fill(0));
 
 			const treasures = arr.splice(0, TREASURES_COUNT);
 
