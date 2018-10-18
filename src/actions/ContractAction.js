@@ -26,6 +26,7 @@ const WIDTH = 11;
 const PLAYERS_COUNT = 2;
 const TREASURES_COUNT = 5;
 
+let Game = null;
 
 class ContractActionsClass extends BaseActionsClass {
 
@@ -68,18 +69,19 @@ class ContractActionsClass extends BaseActionsClass {
 				dispatch(GlobalActions.setValue(['inSearch'], false));
 				dispatch(GlobalActions.setValue(['inGame'], true));
 
-				await dispatch(this.createGame(players, treasures, map));
+				await dispatch(this.createGame(players, addresses, treasures, map));
 				return;
 			}
 
 			if (inGame) {
 				const { status, players, treasures } = await dispatch(this.getGameState());
+				Game.update({ status, players, treasures });
 			}
 
 		};
 	}
 
-	createGame(usersIds, treasures, map) {
+	createGame(usersCoords, userIds, treasures, map) {
 		return async (dispatch, getState) => {
 			const userId = getState().global.getIn(['user', 'id']);
 
@@ -88,13 +90,12 @@ class ContractActionsClass extends BaseActionsClass {
 
 			history.push(GAME_PATH);
 
-			const game = await new Promise((res) => {
+			Game = await new Promise((res) => {
 				setTimeout(async () => {
-					res(await gameInitialize(userId, usersIds, treasures, moveCb, closeCb, map));
+					res(await gameInitialize(userId, usersCoords, userIds, treasures, moveCb, closeCb, map));
 				}, 1000);
 			});
 
-			return game;
 		};
 	}
 
@@ -195,7 +196,7 @@ class ContractActionsClass extends BaseActionsClass {
 		};
 	}
 
-	makeMove(x, y) {
+	makeMove(id) {
 		return async (dispatch, getState) => {
 			const state = getState();
 			let gameId = state.global.get('gameId');
@@ -203,10 +204,10 @@ class ContractActionsClass extends BaseActionsClass {
 			if (!gameId) return;
 
 			gameId = this.to64HexString(gameId, 'int');
-			const point = this.to64HexString((x + (y * WIDTH)), 'int');
+			const point = this.to64HexString(id, 'int');
 
 			const code = `${MOVE}${gameId}${point}`;
-			// dispatch(this.callContant(code));
+			dispatch(this.callContract(code));
 		};
 	}
 

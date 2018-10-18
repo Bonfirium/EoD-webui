@@ -1,3 +1,3 @@
-import { MAP_VALUES } from '../constants/logic.constants';
+import { GAME_FIELD } from '../constants/logic.constants';
 
-export const doublepointToVector = (x, y) => x + y * MAP_VALUES.WIDTH;
+export const doublepointToVector = (x, y) => x + y * GAME_FIELD.WIDTH;

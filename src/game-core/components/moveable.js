@@ -22,6 +22,7 @@ export default class Moveable extends ObjectComponent {
 			height: MOVEABLE.HEIGHT,
 		});
 		this._sprite.anchor.set(MOVEABLE.ANCHOR);
+		console.log('room', room);
 		this.setToRoom(room);
 		this._sprite.visible = true;
 	}
@@ -43,16 +44,16 @@ export default class Moveable extends ObjectComponent {
 	/**
 	 * @param {Room} room
 	 */
-	moveToRoom(room) {
+	moveToRoom(room, ignore = false) {
 		const neighbor = this.room.neighbors.find((neighbor) => (neighbor.id === room.id));
 
-		if (!neighbor) {
+		if (!neighbor && !ignore) {
 			return;
 		}
-
+		console.log('moving');
 		this.room = room;
 
-		// todo rafactor this shit
+		// todo refactor this shit
 		const start = this.getSpiteCoords();
 		const dest = room.getSpiteCoords();
 		dest.x += ROOM.WIDTH / 2;
@@ -67,10 +68,11 @@ export default class Moveable extends ObjectComponent {
 		let interval;
 		const tick = () => {
 			const cur = this.getSpiteCoords();
-			const x = cur.x + xStep;
-			const y = cur.y + yStep;
-			// if (x > dest.x) x = dest.x;
-			// if (y > dest.y) y = dest.y;
+			console.log('tick');
+			let x = cur.x + xStep;
+			let y = cur.y + yStep;
+			if (x > dest.x) x = dest.x;
+			if (y > dest.y) y = dest.y;
 
 			this.set(x, y);
 

@@ -21,7 +21,7 @@ export default class Room extends ObjectComponent {
 		this.neighbors = [];
 		this.mapType = mapType;
 
-		this.id = `${indexX}-${indexY}`;
+		this.id = vectorItem;
 
 		// Opt-in to interactivity
 		this._sprite.interactive = true;

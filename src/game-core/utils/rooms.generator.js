@@ -22,18 +22,17 @@ const _getNeighbors = (map, x, y) => {
 		const newX = X_delta + x;
 		const newY = Y_delta + y;
 
-		if (newX < 0 || newY < 0 || newX > GAME_FIELD.WIDHT - 1 || newY > GAME_FIELD.HEIGHT - 1) {
+		if (newX < 0 || newY < 0 || newX > GAME_FIELD.WIDTH - 1 || newY > GAME_FIELD.HEIGHT - 1) {
 			continue;
 		}
 
-		console.log(newX, newY);
 		const potentialNeighbor = map[newX][newY];
 
 		if (potentialNeighbor === MAP_VALUES.ROOM || potentialNeighbor === MAP_VALUES.PORTAL || potentialNeighbor === MAP_VALUES.TREASURE) {
 			roomDoors.push({
 				x: newX,
 				y: newY,
-				id: `${newX}-${newY}`,
+				id: doublepointToVector(newX, newY),
 			});
 		}
 	}
@@ -53,7 +52,7 @@ export default (map) => {
 	const halfWidth = ROOM.WIDTH / 2;
 	const halfHeight = ROOM.HEIGHT / 2;
 
-	for (let x = 0; x < GAME_FIELD.WIDHT; x++) {
+	for (let x = 0; x < GAME_FIELD.WIDTH; x++) {
 		for (let y = 0; y < GAME_FIELD.HEIGHT; y++) {
 			const objectType = map[x][y];
 			if (objectType === MAP_VALUES.ROOM || objectType === MAP_VALUES.PORTAL || objectType === MAP_VALUES.TREASURE) {

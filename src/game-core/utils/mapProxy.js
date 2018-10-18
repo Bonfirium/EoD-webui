@@ -1,5 +1,5 @@
 
-import { MAP_VALUES } from '../constants/logic.constants';
+import { GAME_FIELD } from '../constants/logic.constants';
 
 const EMPTY = 0;
 const ROOM = 2;
@@ -9,13 +9,13 @@ const TREASURE = 5;
 const comprehension = (count, map) =>
 	new Array(count).fill(0).map((_, index) => map(index));
 
-const proxygenerateEmptyMap = () => comprehension(MAP_VALUES.WIDTH, () => comprehension(MAP_VALUES.HEIGHT, () => EMPTY));
+const proxygenerateEmptyMap = () => comprehension(GAME_FIELD.WIDTH, () => comprehension(GAME_FIELD.HEIGHT, () => EMPTY));
 
 const vectorItemToDoublepoint = (vectorItem) => {
 
-	const y = vectorItem % MAP_VALUES.WIDTH;
+	const x = vectorItem % GAME_FIELD.WIDTH;
 
-	const x = Math.floor(vectorItem / MAP_VALUES.WIDTH);
+	const y = Math.floor(vectorItem / GAME_FIELD.WIDTH);
 
 	return { x, y };
 };
@@ -37,9 +37,7 @@ const fillLayerOverAss = (map, vector, id) => {
  */
 export default (roomsVector, treasuresVector) => {
 	const map = proxygenerateEmptyMap();
-
 	fillLayerOverAss(map, roomsVector, ROOM);
 	fillLayerOverAss(map, treasuresVector, TREASURE);
-
 	return map;
 };
