@@ -1,0 +1,14 @@
+#login {
+	flex-direction: column;
+
+	&>div,
+	&>input {
+		margin-bottom: 16px;
+	}
+
+	&>input {
+		width: 480px;
+		font-family: monospace;
+		text-align: center;
+	}
+}

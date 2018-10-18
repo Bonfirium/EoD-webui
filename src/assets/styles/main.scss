@@ -1,3 +1,16 @@
+@import "_login";
+
 body {
+	margin: 0;
 	background-color: #343a40;
+	color: #f5faffde;
+	font-weight: 600;
+}
+
+.full-screen {
+	width: 100vw;
+	height: 100vh;
+	display: flex;
+	align-items: center;
+	justify-content: center;
 }
