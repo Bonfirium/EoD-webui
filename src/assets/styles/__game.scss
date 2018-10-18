@@ -20,5 +20,14 @@
 			background-image: url("../images/room.png");
 			background-size: cover;
 		}
+
+		&>.door {
+			position: absolute;
+			width: 20px;
+			height: 20px;
+			background-image: url("../images/door.png");
+			background-size: cover;
+			z-index: 1;
+		}
 	}
 }
