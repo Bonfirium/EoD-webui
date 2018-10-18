@@ -4,6 +4,7 @@ import { EchoJSActions } from 'echojs-redux';
 import GlobalReducer from '../reducers/GlobalReducer';
 import BaseActionsClass from './BaseActionsClass';
 import ContractAction from './ContractAction';
+import store from '../store';
 
 
 class GlobalActionsClass extends BaseActionsClass {
@@ -46,6 +47,10 @@ class GlobalActionsClass extends BaseActionsClass {
 				// push error to view
 			}
 		};
+	}
+
+	setStatus(status) {
+		store.dispatch(this.setValue(['status'], status));
 	}
 
 }

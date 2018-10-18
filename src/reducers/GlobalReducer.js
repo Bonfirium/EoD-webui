@@ -13,6 +13,7 @@ const DEFAULT_FIELDS = Map({
 	loadingStart: false,
 	inSearch: false,
 	inGame: false,
+	status: '',
 });
 
 export default createModule({

@@ -29,7 +29,6 @@ export default async (
 	const userIndex = userIds.findIndex((id) => id === userOwnId);
 	const game = new GameComponent(vector, treasures, userIndex);
 
-
 	game.initGame(usersCoords);
 	game.initUser(userIndex, moveCb);
 

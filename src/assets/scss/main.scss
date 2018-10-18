@@ -83,6 +83,16 @@ body {
       }
     }
   }
+  &.first-level {
+    margin: 0;
+    width: 70%;
+    & > div {
+      width: 100% !important;
+    }
+  }
+  &.second-level {
+    margin-top: 0;
+  }
 }
 
 
