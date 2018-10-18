@@ -1,3 +1,4 @@
+require("babel-polyfill");
 const CleanWebpackPlugin = require('clean-webpack-plugin');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
@@ -18,9 +19,7 @@ const extractSass = new ExtractTextPlugin({
 const timeCache = Date.now();
 
 module.exports = {
-	entry: {
-		app: path.resolve('src/index.js'),
-	},
+	entry: ['babel-polyfill', './src/index.js'],
 	output: {
 		publicPath: '/',
 		path: path.resolve('dist'),

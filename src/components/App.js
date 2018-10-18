@@ -1,35 +1,45 @@
-import { Apis } from 'echojs-ws';
 import PropTypes from 'prop-types';
 import React from 'react';
 import { connect } from 'react-redux';
 
 import Login from './Login';
-import { onConnected } from '../actions/GlobalActions';
+import * as GlobalActions from '../actions/GlobalActions';
+import Lobby from './Lobby';
+import Game from './Game';
 
 class App extends React.Component {
 
 	constructor(...args) {
 		super(...args);
-		Apis.instance('wss://echo-dev.io/ws', true).init_promise.then(() => this.props.onConnected());
+	}
+
+	async componentWillMount() {
+		this.props.connect();
 	}
 
 	render() {
 		if (!this.props.isConnected) return <div className="full-screen">Connecting to ECHO...</div>;
-		return <Login />
+		if (!this.props.isLogged) return <Login />;
+		if (!this.props.isInGame) return <Lobby />;
+		return <Game />;
 	}
 
 }
 
 App.propTypes = {
 	isConnected: PropTypes.bool.isRequired,
-	onConnected: PropTypes.func.isRequired,
+	isLogged: PropTypes.bool.isRequired,
+	isInGame: PropTypes.bool.isRequired,
+	connect: PropTypes.func.isRequired,
 };
 
 export default connect(
 	(state) => ({
 		isConnected: state.global.isConnected,
+		isLogged: state.global.isLogged,
+		isInGame: state.global.isInGame,
 	}),
 	(dispatch) => ({
-		onConnected: () => dispatch(onConnected()),
+		connect: () => dispatch(GlobalActions.connect()),
 	})
 )(App);

@@ -1,7 +1,11 @@
 import { PrivateKey } from 'echojs-lib';
+import PropTypes from 'prop-types';
 import React from 'react';
+import { connect } from 'react-redux';
 
-export default class Login extends React.Component {
+import { login } from '../actions/UserActions';
+
+class Login extends React.Component {
 
 	constructor(...args) {
 		super(...args);
@@ -13,11 +17,11 @@ export default class Login extends React.Component {
 			<form
 				id="login"
 				className="full-screen"
-				onSubmit={(e) => {
+				onSubmit={async (e) => {
 					e.preventDefault();
 					this.setState({ loginStarted: true });
 					const privateKey = PrivateKey.fromWif(this.privateKeyInput.value);
-					const publicKey = privateKey.toPublicKey();
+					this.props.login(privateKey);
 				}}
 			>
 				<div>Inter your private key</div>
@@ -31,3 +35,14 @@ export default class Login extends React.Component {
 	}
 
 }
+
+Login.propTypes = {
+	login: PropTypes.func.isRequired,
+};
+
+export default connect(
+	() => ({}),
+	(dispatch) => ({
+		login: (publicKey) => dispatch(login(publicKey)),
+	}),
+)(Login);
