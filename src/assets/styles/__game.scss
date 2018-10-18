@@ -1,0 +1,24 @@
+
+#game {
+	width: 100vw;
+	height: 100vh;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: space-evenly;
+
+	&>#dungeon {
+		width: 992px;
+		height: 544px;
+		position: relative;
+		background-image: url("../images/back.png");
+
+		&>.room {
+			position: absolute;
+			width: 64px;
+			height: 64px;
+			background-image: url("../images/room.png");
+			background-size: cover;
+		}
+	}
+}

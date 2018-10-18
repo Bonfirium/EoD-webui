@@ -3,7 +3,7 @@ import GameReducer from '../reducers/GameReducer';
 
 export function startGame(staticData) {
 	return (dispatch) => {
-		dispatch(GlobalReducer.actions.onConnectedToGame());
+		console.log(staticData);
 		dispatch(GameReducer.actions.setStaticData(staticData));
 		const {
 			chestsPositions,
@@ -11,5 +11,6 @@ export function startGame(staticData) {
 			playersIds,
 			roomsPositions,
 		} = staticData;
+		dispatch(GlobalReducer.actions.onConnectedToGame());
 	};
 }

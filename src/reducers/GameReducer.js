@@ -12,7 +12,7 @@ export default createModule({
 	initialState: DEFAULT_FIELDS,
 	transformations: {
 		setStaticData: {
-			reducer: (state, payload) => ({
+			reducer: (state, { payload }) => ({
 				...state,
 				chestsPositions: payload.chestsPositions,
 				monstersPositions: payload.monstersPositions,
