@@ -27,8 +27,14 @@
 		"webpack-dev-server": "^3.1.0"
 	},
 	"dependencies": {
+		"echojs-lib": "^0.1.7",
 		"echojs-ws": "^0.1.11",
+		"prop-types": "^15.6.2",
 		"react": "^16.5.2",
-		"react-dom": "^16.5.2"
+		"react-dom": "^16.5.2",
+		"react-redux": "^5.0.7",
+		"redux": "^4.0.1",
+		"redux-modules": "^1.1.1",
+		"redux-thunk": "^2.3.0"
 	}
 }
