@@ -6,7 +6,7 @@ import comprehension from '../helpers/comprehension';
 import { setState, setStatus, startGame } from './GameActions';
 import { D12, GAME_STATUSES } from '../helpers/constants';
 
-const contractId = '1.16.16747';
+const contractId = '1.16.16761';
 const MAP_WIDTH = 11;
 const MONSTERS_COUNT = 1;
 const CHESTS_COUNT = 5;
@@ -23,6 +23,7 @@ export const CODES = {
 export const CONTRACT_STATUSES = {
 	NEW: 0,
 	MONSTERS: 1,
+	HUMANS: 2,
 };
 
 export function view(userId, code, args = '') {
@@ -61,17 +62,31 @@ export function parseCoords(coords) {
 }
 
 function canSelectRoom(x, y, getState) {
-	switch (getState().game.status) {
-		case GAME_STATUSES.START_POSITION_SELECTION: {
-			const id = x + y * MAP_WIDTH;
-			if (!getState().game.roomsPositions.some(({ id: _id }) => _id === id)) return false;
-			if (getState().game.chestsPositions.find(({ id: _id }) => _id === id)) return false;
-			if (getState().game.monstersPositions.find(({ id: _id }) => _id === id)) return false;
+	const id = x + y * MAP_WIDTH;
+	const gameState = getState().game;
+	const isMonster = gameState.userIndex < MONSTERS_COUNT;
+	switch (gameState.status) {
+		case GAME_STATUSES.START_POSITION_SELECTION:
+			if (!gameState.roomsPositions.some(({ id: _id }) => _id === id)) return false;
+			if (gameState.chestsPositions.find(({ id: _id }) => _id === id)) return false;
+			if (gameState.monstersPositions.find(({ id: _id }) => _id === id)) return false;
 			return D12.every(({ dx, dy }) => {
 				const x1 = x + dx;
 				const y1 = y + dy;
 				const id1 = x1 + y1 * MAP_WIDTH;
-				return getState().game.monstersPositions.find(({ id: _id }) => _id !== id1);
+				return gameState.monstersPositions.find(({ id: _id }) => _id !== id1);
+			});
+		case GAME_STATUSES.MOVE_POSITION_SELECTION: {
+			if (!gameState.roomsPositions.some(({ id: _id }) => _id === id)) return false;
+			const {
+				x: selfX,
+				y: selfY,
+			} = isMonster ? gameState.monstersPositions[0] : gameState.humansPositions[0];
+			return D12.some(({ dx, dy }) => {
+				const x1 = selfX + dx;
+				const y1 = selfY + dy;
+				const id1 = x1 + y1 * MAP_WIDTH;
+				return id1 === id;
 			});
 		}
 		default:
@@ -104,29 +119,55 @@ export function getGameState() {
 			res.push(Number.parseInt(state.substr(i * 64, 64), 16));
 		}
 		const [status, monsterPositions, humanPositions] = res;
+		console.log(status);
 		switch (status) {
 			case CONTRACT_STATUSES.NEW:
 				break;
 			case CONTRACT_STATUSES.MONSTERS: {
-				setStatus(getState().game.userIndex < MONSTERS_COUNT ?
-					GAME_STATUSES.MOVE_POSITION_SELECTION : GAME_STATUSES.WAITING_FOR_OPPONENTS_MOVE)(dispatch);
-				setState({
-					humansPositions: [{
-						id: humanPositions,
-						x: humanPositions % MAP_WIDTH,
-						y: Math.floor(humanPositions / MAP_WIDTH),
-					}],
-				})(dispatch);
+				const isMonster = getState().game.userIndex < MONSTERS_COUNT;
+				if (
+					(isMonster && [
+						GAME_STATUSES.WAITING_FOR_HUMANS_START_POSITIONS,
+						GAME_STATUSES.WAITING_FOR_OPPONENTS_MOVE,
+					].includes(getState().game.status)) ||
+					(!isMonster)
+				) {
+					setStatus(getState().game.userIndex < MONSTERS_COUNT ?
+						GAME_STATUSES.MOVE_POSITION_SELECTION : GAME_STATUSES.WAITING_FOR_OPPONENTS_MOVE)(dispatch);
+				}
+				break;
+			}
+			case CONTRACT_STATUSES.HUMANS: {
+				const isMonster = getState().game.userIndex < MONSTERS_COUNT;
+				if (
+					(!isMonster && getState().game.status === GAME_STATUSES.WAITING_FOR_OPPONENTS_MOVE) ||
+					(isMonster)
+				) {
+					setStatus(getState().game.userIndex < MONSTERS_COUNT ?
+						GAME_STATUSES.WAITING_FOR_OPPONENTS_MOVE : GAME_STATUSES.MOVE_POSITION_SELECTION)(dispatch);
+				}
 				break;
 			}
 			default:
 				throw new Error('Not implemented');
 		}
+		setState({
+			humansPositions: [{
+				id: humanPositions,
+				x: humanPositions % MAP_WIDTH,
+				y: Math.floor(humanPositions / MAP_WIDTH),
+			}],
+			monstersPositions: [{
+				id: monsterPositions,
+				x: monsterPositions % MAP_WIDTH,
+				y: Math.floor(monsterPositions / MAP_WIDTH),
+			}],
+		})(dispatch);
 	};
 }
 
 export function startStateUpdater(dispatch) {
-	setTimeout(() => dispatch(getGameState()).then(() => startStateUpdater(dispatch)), 1);
+	setTimeout(() => dispatch(getGameState()).then(() => startStateUpdater(dispatch)), 1000);
 }
 
 export function findGame({ onBroadcast, onGetGameId, onFullGame } = {}) {
@@ -138,7 +179,7 @@ export function findGame({ onBroadcast, onGetGameId, onFullGame } = {}) {
 		while (true) {
 			const nextGameId = await view(userId, CODES.GET_NEXT_GAME_ID);
 			if (nextGameId !== pureGameId) break;
-			// await new Promise((resolve) => setTimeout(() => resolve(), 0));
+			await new Promise((resolve) => setTimeout(() => resolve(), 1000));
 		}
 		if (onFullGame) onFullGame();
 		const pureStatic = await view(userId, CODES.GET_STATIC_GAME_DATA, pureGameId);

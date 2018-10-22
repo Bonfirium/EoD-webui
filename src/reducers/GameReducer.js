@@ -27,7 +27,8 @@ export default createModule({
 			}),
 		},
 		setState: {
-			reducer: (state, { payload: { humansPositions } }) => ({ ...state, humansPositions }),
+			reducer: (state, { payload: { humansPositions, monstersPositions } }) =>
+				({ ...state, humansPositions, monstersPositions }),
 		},
 		setStatus: (state, { payload }) => ({
 			...state,

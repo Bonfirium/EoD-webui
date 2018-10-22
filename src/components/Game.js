@@ -2,7 +2,7 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import { connect } from 'react-redux';
 
-import { D12, GAME_STATUSES, MAP_HEIGHT, MAP_WIDTH } from '../helpers/constants';
+import { D12, GAME_STATUSES, MAP_HEIGHT, MAP_WIDTH, MONSTERS_COUNT } from '../helpers/constants';
 import comprehension from '../helpers/comprehension';
 import { isOnMap } from '../helpers/common';
 import { getGameState, move } from '../actions/ContractActions';
@@ -63,13 +63,17 @@ class Game extends React.Component {
 					key={`monster#${index}`}
 				/>,
 			);
-			if (this.props.status === GAME_STATUSES.START_POSITION_SELECTION) {
-				activeCells.delete(id);
+			if (this.props.status === GAME_STATUSES.START_POSITION_SELECTION ||
+				(this.props.status === GAME_STATUSES.MOVE_POSITION_SELECTION && this.props.isMonster)) {
+				if (this.props.status === GAME_STATUSES.START_POSITION_SELECTION) activeCells.delete(id);
+				else activeCells.add(id);
 				for (let i = 0; i < 12; i++) {
 					const { dx, dy } = D12[i];
 					const nearX = x + dx;
 					const nearY = y + dy;
-					activeCells.delete(nearX + nearY * MAP_WIDTH);
+					const nearRoomId = nearX + nearY * MAP_WIDTH;
+					if (this.props.status === GAME_STATUSES.START_POSITION_SELECTION) activeCells.delete(nearRoomId);
+					else activeCells.add(nearRoomId);
 				}
 			}
 		});
@@ -80,7 +84,16 @@ class Game extends React.Component {
 					style={{ top: `${y * 32 + 32}px`, left: `${x * 32 + 32}px` }}
 					key={`human#${index}`}
 				/>
-			)
+			);
+			if (this.props.status === GAME_STATUSES.MOVE_POSITION_SELECTION && !this.props.isMonster) {
+				activeCells.add(id);
+				for (let i = 0; i < 12; i++) {
+					const { dx, dy } = D12[i];
+					const nearX = x + dx;
+					const nearY = y + dy;
+					activeCells.add(nearX + nearY * MAP_WIDTH);
+				}
+			}
 		});
 		this.props.chestsPositions.forEach(({ x, y, id }, index) => {
 			result.push(
@@ -126,6 +139,7 @@ class Game extends React.Component {
 					[GAME_STATUSES.VALIDATION]: 'Move validation...',
 					[GAME_STATUSES.GETTING_GAME_STATUS]: 'Getting game status...',
 					[GAME_STATUSES.WAITING_FOR_OPPONENTS_MOVE]: 'Waiting for opponents move...',
+					[GAME_STATUSES.MOVE_POSITION_SELECTION]: 'Make your move',
 				}[this.props.status]}</header>
 				<div id="dungeon">
 					{this.render_map()}
@@ -138,6 +152,7 @@ class Game extends React.Component {
 
 Game.propTypes = {
 	status: PropTypes.string.isRequired,
+	isMonster: PropTypes.bool.isRequired,
 	chestsPositions: PropTypes.array.isRequired,
 	monstersPositions: PropTypes.array.isRequired,
 	humansPositions: PropTypes.array,
@@ -154,6 +169,7 @@ Game.defaultProps = {
 export default connect(
 	(state) => ({
 		status: state.game.status,
+		isMonster: state.game.userIndex < MONSTERS_COUNT,
 		chestsPositions: state.game.chestsPositions,
 		monstersPositions: state.game.monstersPositions,
 		humansPositions: state.game.humansPositions,

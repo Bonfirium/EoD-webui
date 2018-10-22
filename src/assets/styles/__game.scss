@@ -79,10 +79,10 @@
 			background-color: #595cff00;
 
 			&.active {
-				background-color: #595cff11;
+				background-color: #595cff44;
 				cursor: pointer;
 				&:hover {
-					background-color: #595cff44;
+					background-color: #595cff88;
 					&>.loader {
 						width: 48px;
 						height: 36px;
@@ -98,7 +98,7 @@
 					border-top-color: #ff293d;
 					border-bottom-color: #ff293d;
 					animation: move_target_animation 4s linear infinite;
-					opacity: 0.7;
+					opacity: 1;
 					width: 28px;
 					height: 16px;
 					z-index: 998;
