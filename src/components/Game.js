@@ -66,14 +66,13 @@ class Game extends React.Component {
 			if (this.props.status === GAME_STATUSES.START_POSITION_SELECTION ||
 				(this.props.status === GAME_STATUSES.MOVE_POSITION_SELECTION && this.props.isMonster)) {
 				if (this.props.status === GAME_STATUSES.START_POSITION_SELECTION) activeCells.delete(id);
-				else activeCells.add(id);
 				for (let i = 0; i < 12; i++) {
 					const { dx, dy } = D12[i];
 					const nearX = x + dx;
 					const nearY = y + dy;
 					const nearRoomId = nearX + nearY * MAP_WIDTH;
 					if (this.props.status === GAME_STATUSES.START_POSITION_SELECTION) activeCells.delete(nearRoomId);
-					else activeCells.add(nearRoomId);
+					else if (this.props.userIndex === index) activeCells.add(nearRoomId);
 				}
 			}
 		});
@@ -152,6 +151,7 @@ class Game extends React.Component {
 
 Game.propTypes = {
 	status: PropTypes.string.isRequired,
+	userIndex: PropTypes.number.isRequired,
 	isMonster: PropTypes.bool.isRequired,
 	chestsPositions: PropTypes.array.isRequired,
 	monstersPositions: PropTypes.array.isRequired,
@@ -169,6 +169,7 @@ Game.defaultProps = {
 export default connect(
 	(state) => ({
 		status: state.game.status,
+		userIndex: state.game.userIndex,
 		isMonster: state.game.userIndex < MONSTERS_COUNT,
 		chestsPositions: state.game.chestsPositions,
 		monstersPositions: state.game.monstersPositions,

@@ -14,6 +14,7 @@ export function startGame(staticData) {
 }
 
 export function setState(state) {
+	console.log(state);
 	return (dispatch) => dispatch(GameReducer.actions.setState(state));
 }
 

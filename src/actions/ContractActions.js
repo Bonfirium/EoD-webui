@@ -4,13 +4,11 @@ import { Apis } from 'echojs-ws';
 
 import comprehension from '../helpers/comprehension';
 import { setState, setStatus, startGame } from './GameActions';
-import { D12, GAME_STATUSES } from '../helpers/constants';
+import { D12, GAME_STATUSES, MAP_WIDTH, MONSTERS_COUNT } from '../helpers/constants';
 
-const contractId = '1.16.16761';
-const MAP_WIDTH = 11;
-const MONSTERS_COUNT = 1;
-const CHESTS_COUNT = 5;
-const PLAYERS_COUNT = 2;
+const contractId = '1.16.16763';
+const CHESTS_COUNT = 6;
+const PLAYERS_COUNT = 3;
 
 export const CODES = {
 	FIND_GAME: '1ca1841c', // find_game()
@@ -81,7 +79,7 @@ function canSelectRoom(x, y, getState) {
 			const {
 				x: selfX,
 				y: selfY,
-			} = isMonster ? gameState.monstersPositions[0] : gameState.humansPositions[0];
+			} = isMonster ? gameState.monstersPositions[getState().game.userIndex] : gameState.humansPositions[0];
 			return D12.some(({ dx, dy }) => {
 				const x1 = selfX + dx;
 				const y1 = selfY + dy;
@@ -115,10 +113,12 @@ export function getGameState() {
 		const gameId = getState().game.id;
 		const state = await view(getState().user.id, CODES.GET_GAME_STATE, prepareArgument(gameId.toString(16)));
 		const res = [];
-		for (let i = 0; i < 3; i++) {
+		for (let i = 0; i < PLAYERS_COUNT + 1; i++) {
 			res.push(Number.parseInt(state.substr(i * 64, 64), 16));
 		}
-		const [status, monsterPositions, humanPositions] = res;
+		const status = res[0];
+		const monstersPositions = comprehension(MONSTERS_COUNT, (index) => res[index + 1]);
+		const humansPositions = [res[3]];
 		console.log(status);
 		switch (status) {
 			case CONTRACT_STATUSES.NEW:
@@ -152,16 +152,16 @@ export function getGameState() {
 				throw new Error('Not implemented');
 		}
 		setState({
-			humansPositions: [{
-				id: humanPositions,
-				x: humanPositions % MAP_WIDTH,
-				y: Math.floor(humanPositions / MAP_WIDTH),
-			}],
-			monstersPositions: [{
-				id: monsterPositions,
-				x: monsterPositions % MAP_WIDTH,
-				y: Math.floor(monsterPositions / MAP_WIDTH),
-			}],
+			humansPositions: humansPositions.map((roomId) => ({
+				id: roomId,
+				x: roomId % MAP_WIDTH,
+				y: Math.floor(roomId / MAP_WIDTH),
+			})),
+			monstersPositions: monstersPositions.map((roomId) => ({
+				id: roomId,
+				x: roomId % MAP_WIDTH,
+				y: Math.floor(roomId / MAP_WIDTH),
+			})),
 		})(dispatch);
 	};
 }

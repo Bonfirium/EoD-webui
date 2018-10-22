@@ -1,7 +1,7 @@
 
-export const MAP_WIDTH = 11;
-export const MAP_HEIGHT = 11;
-export const MONSTERS_COUNT = 1;
+export const MAP_WIDTH = 14;
+export const MAP_HEIGHT = 13;
+export const MONSTERS_COUNT = 2;
 
 export const D8_X = [1, 1, 0, -1, -1, -1, 0, 1];
 export const D8_Y = [0, -1, -1, -1, 0, 1, 1, 1];
