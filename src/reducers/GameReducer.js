@@ -1,6 +1,7 @@
 import { createModule } from 'redux-modules';
 
 const DEFAULT_FIELDS = {
+	status: null,
 	chestsPositions: null,
 	monstersPositions: null,
 	playersIds: null,
@@ -20,5 +21,9 @@ export default createModule({
 				roomsPositions: payload.roomsPositions,
 			}),
 		},
+		setStatus: (state, { payload }) => ({
+			...state,
+			status: payload,
+		}),
 	},
 });

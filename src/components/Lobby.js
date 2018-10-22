@@ -51,7 +51,7 @@ class Lobby extends React.Component {
 							</React.Fragment>}
 					</div>
 				</div>
-				<div>TBD: statistic and games history</div>
+				<div>TBD in v0.2: statistic and games history</div>
 			</div>
 		);
 	}
