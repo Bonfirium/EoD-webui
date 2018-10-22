@@ -105,6 +105,8 @@ export function getGameState() {
 		}
 		const [status, monsterPositions, humanPositions] = res;
 		switch (status) {
+			case CONTRACT_STATUSES.NEW:
+				break;
 			case CONTRACT_STATUSES.MONSTERS: {
 				setStatus(getState().game.userIndex < MONSTERS_COUNT ?
 					GAME_STATUSES.MOVE_POSITION_SELECTION : GAME_STATUSES.WAITING_FOR_OPPONENTS_MOVE)(dispatch);
@@ -123,6 +125,10 @@ export function getGameState() {
 	};
 }
 
+export function startStateUpdater(dispatch) {
+	setTimeout(() => dispatch(getGameState()).then(() => startStateUpdater(dispatch)), 1);
+}
+
 export function findGame({ onBroadcast, onGetGameId, onFullGame } = {}) {
 	return async (dispatch, getState) => {
 		const userId = getState().user.id;
@@ -132,7 +138,7 @@ export function findGame({ onBroadcast, onGetGameId, onFullGame } = {}) {
 		while (true) {
 			const nextGameId = await view(userId, CODES.GET_NEXT_GAME_ID);
 			if (nextGameId !== pureGameId) break;
-			await new Promise((resolve) => setTimeout(() => resolve(), 2000));
+			// await new Promise((resolve) => setTimeout(() => resolve(), 0));
 		}
 		if (onFullGame) onFullGame();
 		const pureStatic = await view(userId, CODES.GET_STATIC_GAME_DATA, pureGameId);
@@ -143,7 +149,7 @@ export function findGame({ onBroadcast, onGetGameId, onFullGame } = {}) {
 		const playersIds = comprehension(PLAYERS_COUNT, (index) =>
 			'1.2.' +
 			new BN(pureStatic.substr((index + MONSTERS_COUNT + CHESTS_COUNT + 1) * 64, 64), 16).toString());
-
+		startStateUpdater(dispatch);
 		await dispatch(startGame({
 			userIndex: playersIds.indexOf(userId),
 			monstersPositions: parseCoords(comprehension(MONSTERS_COUNT, (index) =>
