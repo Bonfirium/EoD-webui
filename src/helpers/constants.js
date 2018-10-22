@@ -12,5 +12,10 @@ export const D12 = D12_X.map((dx, index) => ({ dx, dy: D12_Y[index] }));
 
 export const GAME_STATUSES = {
 	START_POSITION_SELECTION: 'start_positions_selection',
+	MOVE_POSITION_SELECTION: 'move_position_selection',
 	WAITING_FOR_HUMANS_START_POSITIONS: 'waiting_for_humans_start_positions',
+	WAITING_FOR_OPPONENTS_MOVE: 'waiting_for_opponents_move',
+	SENDING_MOVE: 'sending_move',
+	VALIDATION: 'validation',
+	GETTING_GAME_STATUS: 'getting_game_status',
 };

@@ -5,6 +5,8 @@ import { connect } from 'react-redux';
 import { D12, GAME_STATUSES, MAP_HEIGHT, MAP_WIDTH } from '../helpers/constants';
 import comprehension from '../helpers/comprehension';
 import { isOnMap } from '../helpers/common';
+import { getGameState, move } from '../actions/ContractActions';
+import { setStatus } from '../actions/GameActions';
 
 const CELL = {
 	WALL: 3,
@@ -12,6 +14,11 @@ const CELL = {
 };
 
 class Game extends React.Component {
+
+	constructor(...args) {
+		super(...args);
+		this.state = { selectedPositions: null, status: null };
+	}
 
 	componentWillMount() {
 		this.map = comprehension(MAP_WIDTH, () => comprehension(MAP_HEIGHT, () => CELL.WALL));
@@ -29,6 +36,7 @@ class Game extends React.Component {
 				<div
 					className="room"
 					style={{ top: `${y * 32}px`, left: `${x * 32}px` }}
+					key={`room#${id}`}
 				/>,
 			);
 			for (let i = 0; i < 6; i++) {
@@ -65,6 +73,15 @@ class Game extends React.Component {
 				}
 			}
 		});
+		(this.props.humansPositions ? this.props.humansPositions : []).forEach(({ x, y, id }, index) => {
+			result.push(
+				<div
+					className="human"
+					style={{ top: `${y * 32 + 32}px`, left: `${x * 32 + 32}px` }}
+					key={`human#${index}`}
+				/>
+			)
+		});
 		this.props.chestsPositions.forEach(({ x, y, id }, index) => {
 			result.push(
 				<div
@@ -78,16 +95,23 @@ class Game extends React.Component {
 		this.props.roomsPositions.forEach(({ x, y, id }) => {
 			result.push(
 				<div
-					className={`selector ${activeCells.has(id) ? 'active' : ''}`}
+					className={'selector ' +
+					(!this.state.status && activeCells.has(id) ? 'active' : '') +
+					(this.state.selectedPositions === id ? 'selected' : '')}
 					style={{ top: `${y * 32}px`, left: `${x * 32}px` }}
 					key={`selector#${id}`}
-				/>,
+					onClick={async () => {
+						await this.props.move(x, y, {
+							onValidate: () => this.props.setStatus(GAME_STATUSES.SENDING_MOVE),
+							onBroadcast: () => this.props.setStatus(GAME_STATUSES.VALIDATION),
+						});
+						this.props.setStatus(GAME_STATUSES.GETTING_GAME_STATUS);
+						await this.props.getGameState();
+					}}
+				>
+					<div className="loader"/>
+				</div>,
 			);
-			if (activeCells.has(id)) {
-				result.push(
-					<div className="move-target" key={`move-target#${id}`} />
-				);
-			}
 		});
 		return result;
 	}
@@ -95,9 +119,13 @@ class Game extends React.Component {
 	render() {
 		return (
 			<div id="game">
-				<header>{{
+				<header>{this.state.status || {
 					[GAME_STATUSES.START_POSITION_SELECTION]: 'Select start position',
-					[GAME_STATUSES.WAITING_FOR_HUMANS_START_POSITIONS]: 'Waiting for start of the game',
+					[GAME_STATUSES.WAITING_FOR_HUMANS_START_POSITIONS]: 'Waiting for start of the game...',
+					[GAME_STATUSES.SENDING_MOVE]: 'Sending move to smart-contract...',
+					[GAME_STATUSES.VALIDATION]: 'Move validation...',
+					[GAME_STATUSES.GETTING_GAME_STATUS]: 'Getting game status...',
+					[GAME_STATUSES.WAITING_FOR_OPPONENTS_MOVE]: 'Waiting for opponents move...',
 				}[this.props.status]}</header>
 				<div id="dungeon">
 					{this.render_map()}
@@ -112,12 +140,28 @@ Game.propTypes = {
 	status: PropTypes.string.isRequired,
 	chestsPositions: PropTypes.array.isRequired,
 	monstersPositions: PropTypes.array.isRequired,
+	humansPositions: PropTypes.array,
 	roomsPositions: PropTypes.array.isRequired,
+	move: PropTypes.func.isRequired,
+	setStatus: PropTypes.func.isRequired,
+	getGameState: PropTypes.func.isRequired,
 };
 
-export default connect((state) => ({
-	status: state.game.status,
-	chestsPositions: state.game.chestsPositions,
-	monstersPositions: state.game.monstersPositions,
-	roomsPositions: state.game.roomsPositions,
-}))(Game);
+Game.defaultProps = {
+	humansPositions: [],
+};
+
+export default connect(
+	(state) => ({
+		status: state.game.status,
+		chestsPositions: state.game.chestsPositions,
+		monstersPositions: state.game.monstersPositions,
+		humansPositions: state.game.humansPositions,
+		roomsPositions: state.game.roomsPositions,
+	}),
+	(dispatch) => ({
+		move: (x, y, cbs) => dispatch(move(x, y, cbs)),
+		setStatus: (status) => dispatch(setStatus(status)),
+		getGameState: () => dispatch(getGameState()),
+	}),
+)(Game);

@@ -57,20 +57,39 @@
 			z-index: 2;
 		}
 
+		&>.human {
+			position: absolute;
+			transform: translate(-50%, calc(-50% - 7px));
+			width: 48px;
+			height: 48px;
+			background-image: url("../images/hero_01.png");
+			background-size: cover;
+			z-index: 4;
+		}
+
 		&>.selector {
 			position: absolute;
 			width: 64px;
 			height: 64px;
-			opacity: 0;
+			//opacity: 0;
 			z-index: 999;
 			display: flex;
 			justify-content: center;
 			align-items: center;
+			background-color: #595cff00;
 
-			&:hover {
-				opacity: 0.2;
-
-				&>.move-target {
+			&.active {
+				background-color: #595cff11;
+				cursor: pointer;
+				&:hover {
+					background-color: #595cff44;
+					&>.loader {
+						width: 48px;
+						height: 36px;
+						opacity: 1;
+					}
+				}
+				&>.loader {
 					border-style: solid;
 					border-width: 0px;
 					border-top-width: 6px;
@@ -78,10 +97,12 @@
 					border-radius: 50%;
 					border-top-color: #ff293d;
 					border-bottom-color: #ff293d;
-					animation: move_target_animation 2s linear infinite;
-					width: 48px;
-					height: 36px;
+					animation: move_target_animation 4s linear infinite;
+					opacity: 0.7;
+					width: 28px;
+					height: 16px;
 					z-index: 998;
+					transition: width,height 0.5s ease-out;
 				}
 			}
 		}

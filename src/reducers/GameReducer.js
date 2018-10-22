@@ -2,8 +2,11 @@ import { createModule } from 'redux-modules';
 
 const DEFAULT_FIELDS = {
 	status: null,
+	id: null,
+	userIndex: null,
 	chestsPositions: null,
 	monstersPositions: null,
+	humansPositions: null,
 	playersIds: null,
 	roomsPositions: null,
 };
@@ -15,11 +18,16 @@ export default createModule({
 		setStaticData: {
 			reducer: (state, { payload }) => ({
 				...state,
+				userIndex: payload.userIndex,
+				id: payload.id,
 				chestsPositions: payload.chestsPositions,
 				monstersPositions: payload.monstersPositions,
 				playersIds: payload.playersIds,
 				roomsPositions: payload.roomsPositions,
 			}),
+		},
+		setState: {
+			reducer: (state, { payload: { humansPositions } }) => ({ ...state, humansPositions }),
 		},
 		setStatus: (state, { payload }) => ({
 			...state,
